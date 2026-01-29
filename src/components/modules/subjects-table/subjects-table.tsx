@@ -20,46 +20,63 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  createCategory,
-  updateCategory,
-  deleteCategory,
-} from '@/actions/manage-categories.action';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  createSubject,
+  updateSubject,
+  deleteSubject,
+} from '@/actions/manage-subjects.action';
+
+type Subject = {
+  id: string;
+  name: string;
+  categoryId: string;
+};
 
 type Category = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
 };
 
-const categorySchema = z.object({
+const subjectSchema = z.object({
   id: z.string(),
   name: z.string().min(1, 'Name is required'),
-  description: z.string(),
+  categoryId: z.string().min(1, 'Category is required'),
 });
 
-const CategoriesTable = ({ categories }: { categories: Category[] }) => {
+const SubjectsTable = ({
+  subjects,
+  categories
+}: {
+  subjects: Subject[];
+  categories: Category[];
+}) => {
   const form = useForm({
     defaultValues: {
       id: '',
       name: '',
-      description: '',
+      categoryId: '',
     },
-    validators: {
-      onSubmit: categorySchema,
-    },
+    validators: { onSubmit: subjectSchema },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading(
-        value.id ? 'Updating category...' : 'Creating category...',
+        value.id ? 'Updating subject...' : 'Creating subject...'
       );
       try {
         const res = value.id
-          ? await updateCategory(value.id, {
+          ? await updateSubject(value.id, {
               name: value.name,
-              description: value.description,
+              categoryId: value.categoryId,
             })
-          : await createCategory({
+          : await createSubject({
               name: value.name,
-              description: value.description,
+              categoryId: value.categoryId,
             });
 
         if (!res.success) {
@@ -76,23 +93,28 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
   });
 
   const handleDelete = async (id: string) => {
-    const toastId = toast.loading('Deleting category...');
+    const toastId = toast.loading('Deleting subject...');
     try {
-      const res = await deleteCategory(id);
+      const res = await deleteSubject(id);
       if (!res.success) {
         toast.error('Delete failed', { id: toastId });
         return;
       }
-      toast.success('Category deleted', { id: toastId });
+      toast.success('Subject deleted', { id: toastId });
     } catch {
       toast.error('Something went wrong', { id: toastId });
     }
   };
 
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category ? category.name : categoryId;
+  };
+
   return (
     <>
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           form.handleSubmit();
         }}
@@ -100,7 +122,7 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
       >
         <FieldGroup className="flex flex-col sm:flex-row gap-4 items-end">
           <form.Field name="name">
-            {field => {
+            {(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
@@ -110,7 +132,8 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
                     value={field.state.value}
                     onChange={e => field.handleChange(e.target.value)}
                     aria-invalid={isInvalid}
-                    placeholder="e.g., Programming, Mathematics"
+                    placeholder="e.g., Python, Algebra"
+                    className="w-48"
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
@@ -118,21 +141,32 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
             }}
           </form.Field>
 
-          <form.Field name="description">
-            {field => (
+          <form.Field name="categoryId">
+            {(field) => (
               <Field>
-                <FieldLabel>Description</FieldLabel>
-                <Input
+                <FieldLabel>Category</FieldLabel>
+                <Select
                   value={field.state.value}
-                  onChange={e => field.handleChange(e.target.value)}
-                  placeholder="Optional description"
-                />
+                  onValueChange={field.handleChange}
+                  required
+                >
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </Field>
             )}
           </form.Field>
 
           <Button type="submit" size="lg">
-            {form.state.values.id ? 'Update Category' : 'Add Category'}
+            {form.state.values.id ? 'Update Subject' : 'Add Subject'}
           </Button>
         </FieldGroup>
       </form>
@@ -141,34 +175,35 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-72">Category Name</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead className="w-72">Subject Name</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {categories.length === 0 ? (
+            {subjects.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="h-24 text-center">
-                  No categories found. Create one above.
+                  No subjects found. Create one above.
                 </TableCell>
               </TableRow>
             ) : (
-              categories.map(cat => (
-                <TableRow key={cat.id} className="hover:bg-muted/50">
-                  <TableCell className="font-medium">{cat.name}</TableCell>
-                  <TableCell>{cat.description ?? 'No description'}</TableCell>
+              subjects.map((subject) => (
+                <TableRow key={subject.id} className="hover:bg-muted/50">
+                  <TableCell className="font-medium">{subject.name}</TableCell>
+                  <TableCell>
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                      {getCategoryName(subject.categoryId)}
+                    </span>
+                  </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => {
-                        form.setFieldValue('id', cat.id);
-                        form.setFieldValue('name', cat.name);
-                        form.setFieldValue(
-                          'description',
-                          cat.description ?? '',
-                        );
+                        form.setFieldValue('id', subject.id);
+                        form.setFieldValue('name', subject.name);
+                        form.setFieldValue('categoryId', subject.categoryId);
                       }}
                     >
                       Edit
@@ -176,7 +211,7 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
                     <Button
                       size="sm"
                       variant="destructive"
-                      onClick={() => handleDelete(cat.id)}
+                      onClick={() => handleDelete(subject.id)}
                     >
                       Delete
                     </Button>
@@ -191,4 +226,4 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
   );
 };
 
-export default CategoriesTable;
+export default SubjectsTable;

@@ -1,8 +1,6 @@
 'use client';
 
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
   CreditCard,
   LogOut,
@@ -27,6 +25,7 @@ import {
 import { UserType } from '../layout/Sidebar';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
+import { ROLES } from '@/constants/roles';
 
 export function NavUser({ user }: { user: UserType }) {
   const { isMobile } = useSidebar();
@@ -79,18 +78,12 @@ export function NavUser({ user }: { user: UserType }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              {user.role !== ROLES.ADMIN && (
+                <DropdownMenuItem>
+                  <CreditCard />
+                  Profile
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleLogout()}>

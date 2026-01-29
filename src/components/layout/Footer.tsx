@@ -1,0 +1,125 @@
+import Link from 'next/link';
+import {
+  Facebook,
+  Twitter,
+  Instagram,
+  Mail,
+  Phone,
+  MapPin
+} from 'lucide-react';
+
+const Footer = () => {
+  return (
+    <footer className="bg-background/95 backdrop-blur-lg border-t">
+      <div className="container mx-auto px-6 py-16">
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-12">
+          {/* Brand */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">S</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-2xl bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  SkillBridge
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Connect with expert tutors instantly
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Platform Links */}
+          <div>
+            <h4 className="font-semibold text-lg mb-6 flex items-center gap-2">
+              <span>Platform</span>
+            </h4>
+            <div className="space-y-3 text-sm">
+              <Link href="/" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Home</span>
+              </Link>
+              <Link href="/about" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">About</span>
+              </Link>
+              <Link href="/tutors" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Find Tutors</span>
+              </Link>
+              <Link href="/contact" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Contact</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Tutor Links */}
+          <div>
+            <h4 className="font-semibold text-lg mb-6 flex items-center gap-2">
+              <span>Tutors</span>
+            </h4>
+            <div className="space-y-3 text-sm">
+              <Link href="/tutor/register" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Join as Tutor</span>
+              </Link>
+              <Link href="/tutor/dashboard" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Dashboard</span>
+              </Link>
+              <Link href="/tutor/schedule" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Schedule</span>
+              </Link>
+              <Link href="/tutor/earnings" className="block text-muted-foreground hover:text-foreground transition-colors group">
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">Earnings</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-semibold text-lg mb-6">Get in touch</h4>
+            <div className="space-y-4 text-sm">
+              <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                <Mail className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground">hello@skillbridge.com</span>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                <Phone className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground">+1 (555) 123-4567</span>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
+                <MapPin className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
+                <span className="text-muted-foreground max-w-[200px]">
+                  123 Learning Street, Education City, EDU 12345
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-border pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted-foreground">
+            <p>© 2026 SkillBridge. All rights reserved.</p>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+              <Link href="/support" className="hover:text-foreground transition-colors">Support</Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

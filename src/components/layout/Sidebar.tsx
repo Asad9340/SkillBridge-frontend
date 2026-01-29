@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { ROLES } from '@/constants/roles';
 import { studentRoutes } from '@/routes/studentRoutes';
 import { tutorRoutes } from '@/routes/tutorRoutes';
+import { usePathname } from 'next/navigation';
 
 // This is sample data.
 export interface UserType {
@@ -41,6 +42,7 @@ export function DashboardSidebar({
 }: {
   user: UserType & React.ComponentProps<typeof Sidebar>;
 }) {
+  const pathname = usePathname();
   let routes: Route[] = [];
   switch (user.role) {
     case ROLES.ADMIN:
@@ -64,13 +66,18 @@ export function DashboardSidebar({
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map(item => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url}>{item.title}</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {item.items.map(item => {
+                  const isActive =
+                    pathname === item.url ||
+                    pathname.startsWith(`${item.url}/`);
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild isActive={isActive}>
+                        <Link href={item.url}>{item.title}</Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
