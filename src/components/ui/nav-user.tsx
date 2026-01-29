@@ -32,7 +32,6 @@ export function NavUser({ user }: { user: UserType }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
   const handleLogout = async () => {
-    console.log('click')
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {

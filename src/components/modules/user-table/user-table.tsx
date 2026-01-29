@@ -87,7 +87,7 @@ const ManageUsersTable = ({ users }: { users: User[] }) => {
 
             <TableCell className="text-right">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild disabled={user?.role==='ADMIN'}>
                   <Button size="sm" className="text-xs">
                     Update Status
                   </Button>
