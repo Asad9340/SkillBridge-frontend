@@ -48,11 +48,11 @@ interface NavbarProps {
 
 const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   const isLoggedIn = !!user;
-
+  console.log(isLoggedIn);
   const menu = [
     { title: 'Home', url: '/' },
-    { title: 'About', url: '/about' },
     { title: 'Tutors', url: '/tutors' },
+    { title: 'About', url: '/about' },
     { title: 'Contact', url: '/contact' },
   ];
 
@@ -214,10 +214,10 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                   asChild
                   className="hidden md:flex"
                 >
-                  <Link href="/login">Login</Link>
+                  <Link href="/login">Log In</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/register">Signup</Link>
+                  <Link href="/register">Sign Up</Link>
                 </Button>
               </>
             )}
@@ -291,7 +291,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
             {/* Show Login ONLY if not logged in (mobile) */}
             {!isLoggedIn && (
               <Button variant="outline" size="sm" asChild>
-                <Link href="/login">Login</Link>
+                <Link href="/login">Log In</Link>
               </Button>
             )}
 
@@ -311,7 +311,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                   </div>
                   {!isLoggedIn && (
                     <Button asChild>
-                      <Link href="/register">Signup</Link>
+                      <Link href="/register">Sign Up</Link>
                     </Button>
                   )}
                 </nav>

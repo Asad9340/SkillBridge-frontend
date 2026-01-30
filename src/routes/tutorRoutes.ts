@@ -5,12 +5,28 @@ export const tutorRoutes: Route[] = [
     title: 'Tutor Profile',
     items: [
       {
-        title: 'Create Blog',
-        url: '/dashboard/create-blog',
+        title: 'Profile',
+        url: '/dashboard/profile',
       },
       {
-        title: 'My Blogs',
-        url: '/dashboard/my-blogs',
+        title: 'Update Profile',
+        url: '/dashboard/update-profile',
+      },
+      {
+        title: 'Manage Availability',
+        url: '/dashboard/manage-availability',
+      },
+      {
+        title: 'Add Availability',
+        url: '/dashboard/add-availability',
+      },
+      {
+        title: 'Manage Session',
+        url: '/dashboard/manage-session',
+      },
+      {
+        title: 'Review and Rating',
+        url: '/dashboard/review-and-rating',
       },
     ],
   },
