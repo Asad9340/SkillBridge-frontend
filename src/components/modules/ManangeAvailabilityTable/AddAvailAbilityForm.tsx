@@ -3,7 +3,6 @@
 import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
 import { toast } from 'sonner';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,7 +19,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { createAvailability } from '@/actions/manage-availability.action';
+import {
+  createAvailability,
+  updateAvailability,
+} from '@/actions/manage-availability.action';
 
 type Subject = {
   id: string;
@@ -35,24 +37,40 @@ const availabilitySchema = z.object({
   endTime: z.string().min(1, 'End time required'),
 });
 
+interface AddAvailabilityFormProps {
+  subjects: Subject[];
+  tutorId: string;
+  initialData?: {
+    id: string;
+    subjectId: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+  };
+  onSuccess?: () => void;
+}
+
 const AddAvailAbilityForm = ({
   subjects,
   tutorId,
-}: {
-  subjects: Subject[];
-  tutorId: string;
-}) => {
+  initialData,
+  onSuccess,
+}: AddAvailabilityFormProps) => {
+  const isEdit = !!initialData;
+
   const form = useForm({
     defaultValues: {
-      subjectId: '',
-      date: '',
-      startTime: '',
-      endTime: '',
+      subjectId: initialData?.subjectId || '',
+      date: initialData?.date
+        ? new Date(initialData.date).toISOString().split('T')[0]
+        : '',
+      startTime: initialData?.startTime || '',
+      endTime: initialData?.endTime || '',
     },
     validators: { onSubmit: availabilitySchema },
 
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading('Adding availability...');
+      const toastId = toast.loading(isEdit ? 'Updating...' : 'Adding...');
       try {
         const payload = {
           subjectId: value.subjectId,
@@ -60,15 +78,23 @@ const AddAvailAbilityForm = ({
           startTime: value.startTime,
           endTime: value.endTime,
           tutorId,
+          ...(isEdit ? { id: initialData!.id } : {}),
         };
-        const res = await createAvailability(payload);
+
+        const res = isEdit
+          ? await updateAvailability(initialData.id, payload)
+          : await createAvailability(payload);
+
         if (!res.success) {
-          toast.error('Failed', { id: toastId });
+          toast.error(isEdit ? 'Update failed' : 'Add failed', { id: toastId });
           return;
         }
 
-        toast.success('Availability added', { id: toastId });
+        toast.success(isEdit ? 'Updated successfully' : 'Availability added', {
+          id: toastId,
+        });
         form.reset();
+        onSuccess?.();
       } catch {
         toast.error('Something went wrong', { id: toastId });
       }
@@ -76,13 +102,12 @@ const AddAvailAbilityForm = ({
   });
 
   return (
-    <Card className="max-w-xl mx-auto f-full border shadow-sm">
+    <Card className="max-w-xl mx-auto w-full border shadow-sm">
       <CardHeader>
         <CardTitle className="text-base font-semibold">
-          Add Availability
+          {isEdit ? 'Edit Availability' : 'Add Availability'}
         </CardTitle>
       </CardHeader>
-
       <CardContent>
         <form
           onSubmit={e => {
@@ -104,7 +129,7 @@ const AddAvailAbilityForm = ({
                         <SelectValue placeholder="Select subject" />
                       </SelectTrigger>
                       <SelectContent>
-                        {subjects?.map(s => (
+                        {subjects.map(s => (
                           <SelectItem key={s.id} value={s.id}>
                             {s.name}
                           </SelectItem>
@@ -115,6 +140,7 @@ const AddAvailAbilityForm = ({
                   </Field>
                 )}
               </form.Field>
+
               <form.Field name="date">
                 {field => (
                   <Field>
@@ -161,7 +187,7 @@ const AddAvailAbilityForm = ({
             </div>
 
             <Button type="submit" className="w-full">
-              Save Availability
+              {isEdit ? 'Update Availability' : 'Save Availability'}
             </Button>
           </FieldGroup>
         </form>

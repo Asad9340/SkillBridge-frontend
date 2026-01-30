@@ -41,12 +41,18 @@ export const manageAvailabilityService = {
     updateTag('tutor-availability');
     return { success: true };
   },
-  updateSubject: async (
+  updateAvailability: async (
     id: string,
-    payload: { name: string; categoryId: string },
+    payload: {
+      subjectId: string;
+      date: string;
+      startTime: string;
+      endTime: string;
+      tutorId: string;
+    },
   ) => {
     const cookieStore = await cookies();
-    const res = await fetch(`${API_URL}/subjects/${id}`, {
+    const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -55,17 +61,17 @@ export const manageAvailabilityService = {
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
-    updateTag('admin-subjects');
+    updateTag('tutor-availability');
     return { success: true };
   },
-  deleteSubject: async (id: string) => {
+  deleteAvailability: async (id: string) => {
     const cookieStore = await cookies();
-    const res = await fetch(`${API_URL}/subjects/${id}`, {
+    const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
       method: 'DELETE',
       headers: { cookie: cookieStore.toString() },
     });
     if (!res.ok) return { success: false };
-    updateTag('admin-subjects');
+    updateTag('tutor-availability');
     return { success: true };
   },
 };

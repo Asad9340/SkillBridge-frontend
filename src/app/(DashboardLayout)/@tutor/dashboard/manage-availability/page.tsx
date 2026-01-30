@@ -2,7 +2,6 @@ import { getAllAvailability } from '@/actions/manage-availability.action';
 import { userService } from '@/services/user.service';
 import ManageAvailabilityTable from '@/components/modules/ManangeAvailabilityTable/ManageAvailabilityTable';
 import { getAllSubjects } from '@/actions/manage-subjects.action';
-import AddAvailAbilityForm from '@/components/modules/ManangeAvailabilityTable/AddAvailAbilityForm';
 import { tutorService } from '@/services/tutor.service';
 
 const ManageAvailability = async () => {
@@ -21,13 +20,17 @@ const ManageAvailability = async () => {
           Manage All Availability
         </h1>
       </div>
-      <div>
+      {/* <div>
         <AddAvailAbilityForm subjects={subjects} tutorId={tutorId} />
-      </div>
+      </div> */}
       <div className="mt-8 max-w-5xl mx-auto w-full">
         {availabilityData.length == 0 && <p>No data found</p>}
         {availabilityData.length > 0 && (
-          <ManageAvailabilityTable availabilityData={availabilityData} />
+          <ManageAvailabilityTable
+            availabilityData={availabilityData}
+            subjects={subjects}
+            tutorId={tutorId}
+          />
         )}
       </div>
     </div>
