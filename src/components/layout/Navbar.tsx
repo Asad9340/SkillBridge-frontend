@@ -102,7 +102,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
 
     return (
       <div
-        className="flex items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground"
+        className="flex items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground min-w-[36px]"
         style={{ width: size, height: size }}
       >
         {userName.charAt(0).toUpperCase()}

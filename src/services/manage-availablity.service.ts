@@ -5,7 +5,7 @@ import { updateTag } from 'next/cache';
 const API_URL = env.API_URL;
 
 export const manageAvailabilityService = {
-  getAllAvailability: async(id:string) => {
+  getAllAvailability: async (id: string) => {
     try {
       const cookieStore = await cookies();
       const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
@@ -21,9 +21,15 @@ export const manageAvailabilityService = {
       return { data: null, error };
     }
   },
-  createSubject: async (payload: { name: string; categoryId: string }) => {
+  createAvailability: async (payload: {
+    subjectId: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    tutorId: string;
+  }) => {
     const cookieStore = await cookies();
-    const res = await fetch(`${API_URL}/subjects`, {
+    const res = await fetch(`${API_URL}/tutors-availability`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -32,7 +38,7 @@ export const manageAvailabilityService = {
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
-    updateTag('admin-subjects');
+    updateTag('tutor-availability');
     return { success: true };
   },
   updateSubject: async (
