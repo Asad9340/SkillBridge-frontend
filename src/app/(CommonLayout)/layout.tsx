@@ -4,7 +4,7 @@ import { userService } from "@/services/user.service";
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
     const { data } = await userService.getSession();
-    const userInfo = data.user;
+      const userInfo = data?.user ?? null;
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="fixed top-0 left-0 w-full z-50 border-b bg-background/80 backdrop-blur">

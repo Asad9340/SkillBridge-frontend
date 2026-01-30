@@ -1,9 +1,11 @@
-import { Button } from '@/components/ui/button';
+import Carousel from '@/components/modules/homepage/Carousel';
+import FeaturedTutors from '@/components/modules/homepage/FeaturedTutors';
 
 export default function Home() {
   return (
     <div>
-      <Button>Click me</Button>
+      <Carousel />
+      <FeaturedTutors/>
     </div>
   );
 }

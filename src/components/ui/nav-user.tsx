@@ -26,6 +26,7 @@ import { UserType } from '../layout/Sidebar';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import { ROLES } from '@/constants/roles';
+import Link from 'next/link';
 
 export function NavUser({ user }: { user: UserType }) {
   const { isMobile } = useSidebar();
@@ -79,10 +80,12 @@ export function NavUser({ user }: { user: UserType }) {
             </DropdownMenuLabel>
             <DropdownMenuGroup>
               {user.role !== ROLES.ADMIN && (
+                  <Link href="/dashboard/profile">
                 <DropdownMenuItem>
-                  <CreditCard />
-                  Profile
+                    <CreditCard />
+                    Profile
                 </DropdownMenuItem>
+                  </Link>
               )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
