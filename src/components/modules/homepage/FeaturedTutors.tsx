@@ -1,98 +1,94 @@
 // components/FeaturedTutors.tsx
-import Image from 'next/image';
+
 import Link from 'next/link';
-import { Star, Users, Clock, ChevronRight } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Star, ChevronRight, DollarSign } from 'lucide-react';
 
-const FeaturedTutors = () => {
-  const tutors = [
-    {
-      name: 'Dr. Sarah Khan',
-      subject: 'Mathematics',
-      rating: 4.9,
-      students: 247,
-      availability: 'Live Now',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face&auto=format&q=80',
-    },
-    {
-      name: 'Ahmed Rahman',
-      subject: 'Python Programming',
-      rating: 5.0,
-      students: 189,
-      availability: 'Available Soon',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face&auto=format&q=80',
-    },
-    {
-      name: 'Fatima Ali',
-      subject: 'English Literature',
-      rating: 4.8,
-      students: 312,
-      availability: 'Live Now',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face&auto=format&q=80',
-    },
-    {
-      name: 'Dr. Karim Hossain',
-      subject: 'Physics',
-      rating: 4.9,
-      students: 156,
-      availability: 'Available Now',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face&auto=format&q=80',
-    },
-  ];
+export interface ITutorProfile {
+  id: string;
+  userId: string;
+  bio: string;
+  hourlyRate: number;
+  rating: number;
+  totalReviews: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  email: string;
+  image: string | null;
+}
 
+const FeaturedTutors = ({ allTutors }: { allTutors: ITutorProfile[] }) => {
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-background to-muted/30">
-      <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent mb-4">
-            Top Tutors Right Now
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Connect with our highest-rated tutors available for instant sessions
+    <section className="py-20 px-6 bg-linear-to-b from-background to-muted/30">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-14">
+          <h2 className="text-4xl font-bold mb-3">Top Tutors</h2>
+          <p className="text-muted-foreground text-lg">
+            Learn from highly rated tutors available now
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tutors.map((tutor, index) => (
-            <div
-              key={index}
-              className="group bg-background/50 backdrop-blur-sm rounded-3xl p-8 border border-border hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 hover:bg-background"
-            >
-              <div className="relative mb-6">
-                <Image
-                  src={tutor.image}
-                  alt={tutor.name}
-                  width={120}
-                  height={120}
-                  className="w-24 h-24 md:w-28 md:h-28 rounded-2xl object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
-                  {tutor.availability}
-                </div>
-              </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {allTutors.map(tutor => {
+            const initials = tutor.name
+              ?.split(' ')
+              .map(n => n[0])
+              .join('')
+              .toUpperCase();
 
-              <h3 className="font-bold text-xl mb-2 leading-tight">{tutor.name}</h3>
-              <p className="text-lg text-primary font-semibold mb-4">{tutor.subject}</p>
-
-              <div className="flex items-center gap-6 mb-6">
-                <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 fill-primary text-primary" />
-                  <span className="font-bold text-lg">{tutor.rating}</span>
-                </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <Users className="w-4 h-4" />
-                  <span>{tutor.students}</span>
-                </div>
-              </div>
-
-              <Link
-                href="/tutors"
-                className="group/inline flex items-center gap-2 text-primary font-semibold hover:text-primary/80 transition-colors"
+            return (
+              <Card
+                key={tutor.id}
+                className="group rounded-2xl transition-all hover:-translate-y-1 hover:shadow-xl justify-between"
               >
-                Book Now
-                <ChevronRight className="w-4 h-4 group-hover/inline:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          ))}
+                <CardHeader className="flex flex-col items-center text-center gap-4">
+                  <Avatar className="h-24 w-24 border shadow-sm">
+                    <AvatarImage src={tutor.image || undefined} />
+                    <AvatarFallback className="text-xl">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div>
+                    <h3 className="font-semibold text-lg">{tutor.name}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {tutor.bio || 'Professional tutor'}
+                    </p>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-center gap-2">
+                    <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                    <span className="font-semibold">
+                      {tutor.rating.toFixed(1)}
+                    </span>
+                    <span className="text-muted-foreground text-sm">
+                      ({tutor.totalReviews})
+                    </span>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <Badge variant="secondary" className="text-sm px-3 py-1">
+                      <DollarSign className="w-3 h-3 mr-1" />
+                      {tutor.hourlyRate}/hr
+                    </Badge>
+                  </div>
+
+                  <Link href={`/tutors/${tutor.userId}`}>
+                    <Button className="w-full group">
+                      View Profile
+                      <ChevronRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </section>
