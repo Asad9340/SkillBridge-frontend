@@ -88,7 +88,7 @@ const ManageAvailabilityTable = ({
             >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between">
-                  <CardTitle className="text-xl font-bold text-gray-900 leading-tight">
+                  <CardTitle className="text-xl font-bold text-gray-900  leading-tight">
                     {item.subject}
                   </CardTitle>
                   <Badge

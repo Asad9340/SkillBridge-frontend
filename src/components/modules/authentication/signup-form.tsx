@@ -49,7 +49,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         toast.success('Account created! Please login now.', {
           id: toastId,
         });
-        router.push('/');
+        router.push('/login');
       } catch (error) {
         toast.error('Something went wrong. Please try again.', { id: toastId });
       }

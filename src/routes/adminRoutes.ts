@@ -4,10 +4,10 @@ export const adminRoutes: Route[] = [
   {
     title: 'Admin Profile',
     items: [
-      // {
-      //   title: 'Analytics',
-      //   url: '/analytics',
-      // },
+      {
+        title: 'Home',
+        url: '/',
+      },
       {
         title: 'Manage Users',
         url: '/dashboard/manage-users',

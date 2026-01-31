@@ -43,4 +43,23 @@ export const tutorService = {
     updateTag('tutor-profile');
     return { success: true };
   },
+  createTutorProfile: async (payload: {
+    userId: string;
+    bio: string;
+    hourlyRate: number;
+  }) => {
+    console.log(payload)
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/tutors-profile`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) return { success: false };
+    updateTag('tutor-profile');
+    return { success: true };
+  },
 };

@@ -5,12 +5,28 @@ export const studentRoutes: Route[] = [
     title: 'Student Profile',
     items: [
       {
-        title: 'Create Blog',
-        url: '/dashboard/create-blog',
+        title: 'Home',
+        url: '/',
       },
       {
-        title: 'My Blogs',
-        url: '/dashboard/my-blogs',
+        title: 'Profile',
+        url: '/dashboard/profile',
+      },
+      {
+        title: 'Update Profile',
+        url: '/dashboard/update-profile',
+      },
+      {
+        title: 'Join as Tutor',
+        url: '/join-as-tutor',
+      },
+      {
+        title: 'My Bookings',
+        url: '/dashboard/my-bookings',
+      },
+      {
+        title: 'Reviews',
+        url: '/dashboard/reviews',
       },
     ],
   },

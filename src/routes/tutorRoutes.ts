@@ -5,6 +5,10 @@ export const tutorRoutes: Route[] = [
     title: 'Tutor Profile',
     items: [
       {
+        title: 'Home',
+        url: '/',
+      },
+      {
         title: 'Profile',
         url: '/dashboard/profile',
       },
@@ -15,10 +19,6 @@ export const tutorRoutes: Route[] = [
       {
         title: 'Manage Availability',
         url: '/dashboard/manage-availability',
-      },
-      {
-        title: 'Add Availability',
-        url: '/dashboard/add-availability',
       },
       {
         title: 'Manage Session',
