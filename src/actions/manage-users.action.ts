@@ -16,3 +16,8 @@ export const updateUserStatusByAdmin = async (
   updateTag('manage-users')
   return res;
 };
+
+export const updateUserProfile = async (
+  userId: string,
+  data: { name: string; image: string; phone: string; bio: string },
+) => manageUserService.updateUserProfile(userId, data);
