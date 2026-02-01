@@ -80,7 +80,7 @@ const CategoriesTable = ({ categories }: { categories: Category[] }) => {
     try {
       const res = await deleteCategory(id);
       if (!res.success) {
-        toast.error('Delete failed', { id: toastId });
+        toast.error('Delete failed its connected to a booking', { id: toastId });
         return;
       }
       toast.success('Category deleted', { id: toastId });
