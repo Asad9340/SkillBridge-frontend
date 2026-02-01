@@ -9,6 +9,10 @@ export const studentRoutes: Route[] = [
         url: '/',
       },
       {
+        title: 'Dashboard',
+        url: '/dashboard',
+      },
+      {
         title: 'Profile',
         url: '/dashboard/profile',
       },

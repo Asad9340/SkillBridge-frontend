@@ -68,7 +68,6 @@ export const tutorService = {
     bio: string;
     hourlyRate: number;
   }) => {
-    console.log(payload)
     const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/tutors-profile`, {
       method: 'POST',

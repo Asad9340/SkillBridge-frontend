@@ -24,6 +24,25 @@ export const bookingSessionService = {
       return { data: null, error };
     }
   },
+  getBookingByTutorId: async (tutorId:string) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${API_URL}/booking-session/${tutorId}`, {
+        headers: { cookie: cookieStore.toString() },
+        cache: 'no-store',
+        next: { tags: ['all-tutor-booking'] },
+      });
+      if (!res.ok) {
+        return { data: null, error: 'Failed to fetch booking details' };
+      }
+      const json = await res.json();
+      return json.success === true
+        ? { data: json.data, error: null }
+        : { data: null, error: json.message };
+    } catch (error) {
+      return { data: null, error };
+    }
+  },
   getTutorProfile: async (userId: string) => {
     try {
       const cookieStore = await cookies();
@@ -65,7 +84,6 @@ export const bookingSessionService = {
     subjectId: string;
     tutorId: string;
   }) => {
-    console.log(payload);
     const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/booking-session`, {
       method: 'POST',
@@ -75,7 +93,6 @@ export const bookingSessionService = {
       },
       body: JSON.stringify(payload),
     });
-    console.log(res);
     if (!res.ok) return { success: false };
     return { success: true };
   },

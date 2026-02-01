@@ -9,6 +9,10 @@ export const tutorRoutes: Route[] = [
         url: '/',
       },
       {
+        title: 'Dashboard',
+        url: '/dashboard',
+      },
+      {
         title: 'Profile',
         url: '/dashboard/profile',
       },
@@ -25,8 +29,8 @@ export const tutorRoutes: Route[] = [
         url: '/dashboard/manage-session',
       },
       {
-        title: 'Review and Rating',
-        url: '/dashboard/review-and-rating',
+        title: 'Reviews and Rating',
+        url: '/dashboard/reviews-and-rating',
       },
     ],
   },
