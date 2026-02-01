@@ -1,74 +1,70 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getAllTutors } from '@/actions/manage-tutor.action';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import TutorCard from '@/components/modules/homepage/TutorCard';
+import TutorFilters from '@/components/modules/homepage/TutorFilters';
+import PaginationControls from '@/components/modules/homepage/PaginationControl';
+import { tutorService } from '@/services/tutor.service';
+import { getAllCategories } from '@/actions/manage-categories.action';
 
-interface PageProps {
-  searchParams: {
+const TutorPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{
     page?: string;
+    search?: string;
+    category?: string;
+  }>;
+}) => {
+  const { page = '1', search, category } = await searchParams;
+
+  // Fetch categories for dropdown
+  const { data: categories } = await getAllCategories();
+
+  // Build tutors query params
+  const tutorParams: any = {
+    page,
+    limit: '8',
   };
-}
 
-const TutorPage = async ({ searchParams }: PageProps) => {
-  const currentPage = Number(searchParams.page) || 1;
-  const limit = 10;
+  // Pass search and category filters to the service
+  if (search && search.trim()) {
+    tutorParams.subject = search; // Map search to subject parameter
+  }
+  if (category && category !== 'all') {
+    tutorParams.category = category;
+  }
 
-  const { data, meta } = await getAllTutors({
-    page: currentPage,
-    limit,
-  });
+  // Fetch tutors
+  const response = await tutorService.getAllTutors(tutorParams);
+  const tutors = response.data?.data?.data || [];
 
-  const tutors = data.data || [];
-  const totalPage = meta?.totalPage || 1;
+  const pagination = response.data?.data?.meta || {
+    limit: 10,
+    page: 1,
+    total: 0,
+    totalPages: 1,
+  };
 
   return (
     <section className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-14 text-center">
+        <div className="mb-10 text-center">
           <h1 className="text-4xl font-bold mb-3">All Tutors</h1>
           <p className="text-muted-foreground text-lg">
-            Find the best tutor for your learning journey
+            Browse and search tutors by subject, rating, or price, and filter by
+            category
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {tutors.map((tutor:any) => (
+        {/* Pass categories to filter component */}
+        <TutorFilters categories={categories || []} />
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mt-10">
+          {tutors.map((tutor: any) => (
             <TutorCard key={tutor.id} tutor={tutor} />
           ))}
         </div>
 
-        <div className="flex justify-center mt-14 gap-2 flex-wrap">
-          <Link
-            href={`?page=${currentPage - 1}`}
-            aria-disabled={currentPage <= 1}
-          >
-            <Button variant="outline" disabled={currentPage <= 1}>
-              Previous
-            </Button>
-          </Link>
-
-          {Array.from({ length: totalPage }).map((_, i) => {
-            const page = i + 1;
-
-            return (
-              <Link key={page} href={`?page=${page}`}>
-                <Button variant={page === currentPage ? 'default' : 'outline'}>
-                  {page}
-                </Button>
-              </Link>
-            );
-          })}
-
-          <Link
-            href={`?page=${currentPage + 1}`}
-            aria-disabled={currentPage >= totalPage}
-          >
-            <Button variant="outline" disabled={currentPage >= totalPage}>
-              Next
-            </Button>
-          </Link>
-        </div>
+        <PaginationControls meta={pagination} />
       </div>
     </section>
   );

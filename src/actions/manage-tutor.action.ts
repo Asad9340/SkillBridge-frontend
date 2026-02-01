@@ -1,9 +1,10 @@
 'use server';
 
-import { GetTutorsParams, tutorService } from '@/services/tutor.service';
+import { tutorService } from "@/services/tutor.service";
 
-export const getAllTutors = async (params?: GetTutorsParams) =>
-  tutorService.getAllTutors(params);
+
+export const getAllTutors = async () =>
+  tutorService.getAllTutors();
 
 export const UpdateTutorProfile = async (
   id: string,

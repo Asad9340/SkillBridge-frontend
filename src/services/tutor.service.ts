@@ -1,17 +1,23 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
 
 const API_URL = env.API_URL;
 
+interface ServiceOptions {
+  cache?: RequestCache;
+  revalidate?: number;
+}
 export interface GetTutorsParams {
+  search?: string;
   category?: string;
   subject?: string;
   minPrice?: string;
   maxPrice?: string;
   rating?: string;
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
 }
 
 interface ServiceOptions {
@@ -20,54 +26,33 @@ interface ServiceOptions {
 }
 
 export const tutorService = {
-  getAllTutors: async (params?: GetTutorsParams, options?: ServiceOptions) => {
+
+  getAllTutors: async function (
+    params?: GetTutorsParams,
+    options?: ServiceOptions,
+  ) {
     try {
       const url = new URL(`${API_URL}/tutors-profile`);
-
-      // ✅ Append Query Params
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
-          if (value !== undefined) {
-            url.searchParams.append(key, String(value));
+          if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.append(key, value);
           }
         });
       }
-
       const config: RequestInit = {};
-
       if (options?.cache) {
         config.cache = options.cache;
       }
-
-      if (options?.revalidate !== undefined) {
+      if (options?.revalidate) {
         config.next = { revalidate: options.revalidate };
       }
-
-      // ✅ Add Tag
-      config.next = { ...config.next, tags: ['all-tutors'] };
-
-      const cookieStore = await cookies();
-
-      const res = await fetch(url.toString(), {
-        ...config,
-        headers: {
-          cookie: cookieStore.toString(),
-        },
-      });
-
-      const json = await res.json();
-
-      if (json.success) {
-        return {
-          data: json.data,
-          meta: json.meta,
-          error: null,
-        };
-      }
-
-      return { data: null, meta: null, error: json.message };
-    } catch (error) {
-      return { data: null, meta: null, error };
+      config.next = { ...config.next, tags: ['allTutors'] };
+      const res = await fetch(url.toString(), config);
+      const data = await res.json();
+      return { data: data, error: null };
+    } catch (err) {
+      return { data: null, error: { message: 'Something Went Wrong' } };
     }
   },
   getTutorProfile: async (userId: string) => {

@@ -23,6 +23,7 @@ const TutorProfileDetailsPage = async ({
   const userInfo = sessionData.user as User;
   const { tutorId } = await params;
   const { data: tutor } = await tutorService.getTutorProfile(tutorId);
+  console.log(tutor);
   if (!tutor) {
     return <div className="p-10 text-center">Tutor not found</div>;
   }
@@ -137,6 +138,49 @@ const TutorProfileDetailsPage = async ({
               </CardContent>
             </Card>
           ))}
+        </CardContent>
+      </Card>
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle>Student Reviews</CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-2">
+          {tutor.reviews?.length ? (
+            tutor.reviews.map((review: any, index: number) => {
+              const reviewerInitials = review.reviewerName
+                ?.split(' ')
+                .map((n: string) => n[0])
+                .join('')
+                .toUpperCase();
+
+              return (
+                <div key={index} className="flex gap-4 border rounded-md p-4">
+                  <Avatar className="h-12 w-12 border">
+                    <AvatarImage src={review.reviewerImage || undefined} />
+                    <AvatarFallback>{reviewerInitials}</AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold">{review.reviewerName}</p>
+
+                      <div className="flex items-center gap-1 text-sm">
+                        <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                        {review.rating}
+                      </div>
+                    </div>
+
+                    <p className="text-muted-foreground text-sm">
+                      {review.review || 'No comment provided'}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-muted-foreground">No reviews yet.</p>
+          )}
         </CardContent>
       </Card>
     </div>
