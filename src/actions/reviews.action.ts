@@ -5,6 +5,8 @@ import { ReviewService } from '@/services/reviews.service';
 
 export const getAllReviewByTutorId = async (tutorId: string) =>
   ReviewService.getAllReviewByTutorId(tutorId);
+export const GetAllRatingPublic = async () =>
+  ReviewService.GetAllRatingPublic();
 
 export const updateBookingById = async (
   bookingId: string,
