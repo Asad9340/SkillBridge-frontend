@@ -4,6 +4,8 @@ import { bookingSessionService } from '@/services/booking.service';
 
 export const getBookingByStudentId = async () =>
   bookingSessionService.getBookingByStudentId();
+export const getBookingByTutorId = async (tutorId:string) =>
+  bookingSessionService.getBookingByTutorId(tutorId);
 
 export const updateBookingById = async (
   bookingId: string,
