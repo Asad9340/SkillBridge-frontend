@@ -8,16 +8,21 @@ import { Star, Clock, BookOpen } from 'lucide-react';
 import BookSessionButton from '@/components/modules/tutor/BookSessionButton';
 import { User } from '@/types';
 import { userService } from '@/services/user.service';
+import { redirect } from 'next/navigation';
 
 const TutorProfileDetailsPage = async ({
   params,
 }: {
   params: Promise<{ tutorId: string }>;
 }) => {
+  const { data: sessionData } = await userService.getSession();
+
+  if (!sessionData?.user) {
+    redirect('/login');
+  }
+  const userInfo = sessionData.user as User;
   const { tutorId } = await params;
   const { data: tutor } = await tutorService.getTutorProfile(tutorId);
-    const { data: sessionData } = await userService.getSession();
-    const userInfo = sessionData.user as User;
   if (!tutor) {
     return <div className="p-10 text-center">Tutor not found</div>;
   }

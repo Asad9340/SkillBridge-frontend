@@ -97,7 +97,7 @@ const SubjectsTable = ({
     try {
       const res = await deleteSubject(id);
       if (!res.success) {
-        toast.error('Delete failed', { id: toastId });
+        toast.error('Delete failed because its connected to booking', { id: toastId });
         return;
       }
       toast.success('Subject deleted', { id: toastId });
