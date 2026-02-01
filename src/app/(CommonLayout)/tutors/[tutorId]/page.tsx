@@ -18,7 +18,6 @@ const TutorProfileDetailsPage = async ({
   const { data: tutor } = await tutorService.getTutorProfile(tutorId);
     const { data: sessionData } = await userService.getSession();
     const userInfo = sessionData.user as User;
-  console.log(tutor)
   if (!tutor) {
     return <div className="p-10 text-center">Tutor not found</div>;
   }

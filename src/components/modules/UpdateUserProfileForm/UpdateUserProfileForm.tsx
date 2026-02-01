@@ -43,7 +43,6 @@ const UpdateUserProfileForm = ({ user }: { user: User }) => {
           phone: value.phone,
           bio: value.bio,
         };
-        console.log(payload)
         const res = await updateUserProfile(user.id, {
           name: value.name,
           image: value.image || '',
