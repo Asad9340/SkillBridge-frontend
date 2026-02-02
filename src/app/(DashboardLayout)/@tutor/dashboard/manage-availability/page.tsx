@@ -14,7 +14,7 @@ const ManageAvailability = async () => {
   const { data: tutorProfile } = await tutorService.getTutorProfile(
     userInfo.id,
   );
-  const tutorId = tutorProfile.id
+  const tutorId = tutorProfile.id;
   return (
     <div className="max-w-7xl mx-auto w-full">
       <div className="mb-4">
@@ -26,14 +26,11 @@ const ManageAvailability = async () => {
         <AddAvailAbilityForm subjects={subjects} tutorId={tutorId} />
       </div> */}
       <div className="mt-8 max-w-5xl mx-auto w-full">
-        {availabilityData.length == 0 && <p>No data found</p>}
-        {availabilityData.length > 0 && (
-          <ManageAvailabilityTable
-            availabilityData={availabilityData}
-            subjects={subjects}
-            tutorId={tutorId}
-          />
-        )}
+        <ManageAvailabilityTable
+          availabilityData={availabilityData}
+          subjects={subjects}
+          tutorId={tutorId}
+        />
       </div>
     </div>
   );

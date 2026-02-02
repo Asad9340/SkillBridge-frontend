@@ -24,7 +24,7 @@ export default function PaginationControls({ meta }: PaginationControlsProps) {
   const router = useRouter();
 
   const navigateToPage = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
     params.set('page', page.toString());
     router.push(`?${params.toString()}`);
   };

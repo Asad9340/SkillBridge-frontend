@@ -1,4 +1,4 @@
 import { createAuthClient } from 'better-auth/react';
 export const authClient = createAuthClient({
-  baseURL: 'https://skill-bridge-backend-nine.vercel.app',
+  baseURL: 'https://skill-bridge-sooty-five.vercel.app/api/auth',
 });

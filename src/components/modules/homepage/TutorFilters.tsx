@@ -20,8 +20,8 @@ const TutorFilters: React.FC<TutorFiltersProps> = ({ categories }) => {
   const router = useRouter();
   const params = useSearchParams();
 
-  const [search, setSearch] = useState(params.get('search') || '');
-  const [category, setCategory] = useState(params.get('category') || 'all');
+  const [search, setSearch] = useState(params?.get('search') || '');
+  const [category, setCategory] = useState(params?.get('category') || 'all');
 
   const buildQueryString = (overrides?: Record<string, string>) => {
     const query: Record<string, string> = {};
