@@ -20,7 +20,7 @@ const HomePage=async()=> {
       <FeaturedTutors allTutors={allTutors} />
       <WhyChooseUs />
       <HowItWorks />
-      <ReviewsCarousel reviews={reviews} />;
+      <ReviewsCarousel reviews={reviews} />
     </div>
   );
 }

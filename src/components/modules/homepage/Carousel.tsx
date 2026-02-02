@@ -65,7 +65,6 @@ const Carousel = () => {
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % slides.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -83,7 +82,6 @@ const Carousel = () => {
 
   return (
     <section className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden rounded-3xl shadow-2xl">
-      {/* Slides */}
       <div className="absolute inset-0 rounded-3xl">
         {slides.map((slide, index) => (
           <div
@@ -94,7 +92,7 @@ const Carousel = () => {
                 ? 'opacity-100 translate-x-0'
                 : index < currentSlide
                   ? 'opacity-0 -translate-x-full'
-                  : 'opacity-0 translate-x-full'
+                  : 'opacity-0 translate-x-full',
             )}
           >
             <Image
@@ -105,9 +103,7 @@ const Carousel = () => {
               priority={index === 0}
               sizes="100vw"
             />
-            {/* Enhanced Gradient Overlay */}
             <div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/40 to-black/20 rounded-3xl" />
-            {/* Text Shadow Container - Rounded */}
             <div className="absolute right-6 md:right-12 bottom-8 md:bottom-12 max-w-sm bg-black/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight mb-4">
                 {slide.title}
@@ -115,10 +111,9 @@ const Carousel = () => {
               <p className="text-base md:text-lg text-white/95 drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] mb-6 leading-relaxed">
                 {slide.description}
               </p>
-              {/* Minimal Rounded Button */}
               <Link
                 href={slide.ctaLink}
-                className="group inline-flex items-center gap-2 bg-white/95 backdrop-blur-xl text-foreground px-6 py-3 rounded-2xl font-semibold text-sm md:text-base shadow-2xl hover:bg-white hover:shadow-3xl hover:-translate-y-1 transition-all duration-300 border border-white/40 drop-shadow-xl"
+                className="group inline-flex items-center gap-2 bg-white text-black dark:bg-gray-800 dark:text-white px-6 py-3 rounded-2xl font-semibold text-sm md:text-base shadow-2xl hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-3xl hover:-translate-y-1 transition-all duration-300 border border-white/40 dark:border-gray-600 drop-shadow-xl"
               >
                 {slide.ctaText}
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -128,7 +123,6 @@ const Carousel = () => {
         ))}
       </div>
 
-      {/* Navigation Dots - Rounded */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-40 backdrop-blur-sm bg-black/30 rounded-2xl px-4 py-2 border border-white/20">
         {slides.map((_, index) => (
           <button
@@ -145,7 +139,6 @@ const Carousel = () => {
         ))}
       </div>
 
-      {/* Navigation Arrows - Rounded */}
       <button
         onClick={goToPrev}
         className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/40 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white/60 hover:scale-110 shadow-2xl transition-all duration-300 z-40 border border-white/30 drop-shadow-xl"
@@ -161,7 +154,6 @@ const Carousel = () => {
         <ChevronRight className="w-7 h-7 drop-shadow-md" />
       </button>
 
-      {/* Progress Bar - Rounded */}
       <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/40 backdrop-blur-sm rounded-full z-40 shadow-lg border border-white/20 overflow-hidden">
         <div
           className="h-full bg-linear-to-r from-primary to-secondary shadow-md rounded-full transition-all duration-700 ease-linear"
