@@ -11,12 +11,9 @@ import {
   Shield,
 } from 'lucide-react';
 
-import React from 'react';
-
-const AboutUsPage = () => {
+const AboutUsPage = async () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 py-20">
-      {/* Hero Section - Smaller */}
       <section className="py-20 px-6">
         <div className="container mx-auto text-center">
           <div className="max-w-3xl mx-auto">
@@ -24,7 +21,8 @@ const AboutUsPage = () => {
               Your Bridge to Expert Learning
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
-              Connecting students with world-class tutors for instant booking and personalized learning.
+              Connecting students with world-class tutors for instant booking
+              and personalized learning.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -34,18 +32,11 @@ const AboutUsPage = () => {
                 Find Tutor
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1" />
               </Link>
-              <Link
-                href="/tutor/register"
-                className="inline-flex items-center gap-2 border border-border bg-background px-6 py-3 rounded-xl font-semibold hover:bg-accent transition-all duration-200"
-              >
-                Become Tutor
-              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section - Smaller Cards */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -54,7 +45,9 @@ const AboutUsPage = () => {
                 <Users className="w-8 h-8" />
                 50K+
               </div>
-              <p className="text-lg font-semibold text-foreground">Happy Students</p>
+              <p className="text-lg font-semibold text-foreground">
+                Happy Students
+              </p>
               <p className="text-xs text-muted-foreground">50+ countries</p>
             </div>
             <div className="space-y-2 p-6 bg-background/50 backdrop-blur-sm rounded-2xl border">
@@ -62,7 +55,9 @@ const AboutUsPage = () => {
                 <GraduationCap className="w-8 h-8" />
                 2K+
               </div>
-              <p className="text-lg font-semibold text-foreground">Expert Tutors</p>
+              <p className="text-lg font-semibold text-foreground">
+                Expert Tutors
+              </p>
               <p className="text-xs text-muted-foreground">Certified pros</p>
             </div>
             <div className="space-y-2 p-6 bg-background/50 backdrop-blur-sm rounded-2xl border">
@@ -85,7 +80,6 @@ const AboutUsPage = () => {
         </div>
       </section>
 
-      {/* Mission Section - Minimal */}
       <section className="py-20 px-6 bg-muted/20">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -98,7 +92,10 @@ const AboutUsPage = () => {
                 Democratizing world-class education
               </h2>
               <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
-                <p>Every student deserves exceptional tutors. We connect learners with verified experts instantly.</p>
+                <p>
+                  Every student deserves exceptional tutors. We connect learners
+                  with verified experts instantly.
+                </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2 p-3 bg-background/50 rounded-xl border hover:shadow-md transition-all">
@@ -115,12 +112,16 @@ const AboutUsPage = () => {
               <div className="bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm rounded-2xl p-6 border flex flex-col justify-end">
                 <Calendar className="w-10 h-10 text-primary mb-3" />
                 <h3 className="font-bold text-lg mb-1">Instant Booking</h3>
-                <p className="text-sm text-muted-foreground">Schedule in seconds</p>
+                <p className="text-sm text-muted-foreground">
+                  Schedule in seconds
+                </p>
               </div>
               <div className="bg-gradient-to-br from-primary/5 to-secondary/5 backdrop-blur-sm rounded-2xl p-6 border flex flex-col justify-end">
                 <Users className="w-10 h-10 text-primary mb-3" />
                 <h3 className="font-bold text-lg mb-1">1-on-1 Learning</h3>
-                <p className="text-sm text-muted-foreground">Personal attention</p>
+                <p className="text-sm text-muted-foreground">
+                  Personal attention
+                </p>
               </div>
             </div>
           </div>
@@ -135,12 +136,12 @@ const AboutUsPage = () => {
               Ready to start learning?
             </h2>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link href="/tutors" className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto">
+              <Link
+                href="/tutors"
+                className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all w-full sm:w-auto"
+              >
                 Browse Tutors
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1" />
-              </Link>
-              <Link href="/tutor/register" className="inline-flex items-center gap-2 border border-border bg-background px-6 py-3 rounded-xl font-semibold hover:bg-accent transition-all w-full sm:w-auto">
-                Teach Now
               </Link>
             </div>
           </div>

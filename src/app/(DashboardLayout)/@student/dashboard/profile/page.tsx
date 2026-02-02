@@ -19,6 +19,8 @@ const statusVariantMap = {
   SUSPENDED: 'destructive',
 } as const;
 
+export const dynamic = 'force-dynamic';
+
 const UserProfile = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData?.user as User;

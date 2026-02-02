@@ -1,5 +1,8 @@
 import { getAllUsersByAdmin } from '@/actions/manage-users.action';
 import ManageUsersTable from './../../../../../components/modules/user-table/user-table';
+
+export const dynamic = 'force-dynamic';
+
 const ManageUsersPage = async () => {
   const { data: users, error } = await getAllUsersByAdmin();
   if (error) {

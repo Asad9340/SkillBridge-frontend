@@ -1,6 +1,8 @@
 import { getAdminAnalytics } from '@/actions/analytics.action';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+export const dynamic = 'force-dynamic';
+
 const AdminDashboard = async () => {
   const { data: analytics } = await getAdminAnalytics();
   const booking = analytics.bookingSummary;

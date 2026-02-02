@@ -2,6 +2,8 @@ import { TutorProfile } from "@/components/modules/tutor/TutorProfile";
 import { tutorService } from "@/services/tutor.service";
 import { userService } from "@/services/user.service";
 
+export const dynamic = 'force-dynamic';
+
 const TutorProfilePage = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;

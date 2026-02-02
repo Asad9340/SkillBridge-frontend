@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, BookOpen, User } from 'lucide-react';
 import ReviewSubmitForm from '@/components/modules/Review/ReviewSubmitForm';
 
+export const dynamic = 'force-dynamic';
+
 const ReviewsPage = async () => {
   const { data: bookings } = await getBookingByStudentId();
   const completedBookings =

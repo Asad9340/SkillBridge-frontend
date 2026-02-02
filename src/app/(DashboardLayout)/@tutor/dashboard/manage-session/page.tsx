@@ -7,6 +7,8 @@ import { tutorService } from '@/services/tutor.service';
 import { userService } from '@/services/user.service';
 import ConfirmCancelButton from '@/components/modules/booking/ConfirmCompleteButton';
 
+export const dynamic = 'force-dynamic';
+
 const ManageSessionPage = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;

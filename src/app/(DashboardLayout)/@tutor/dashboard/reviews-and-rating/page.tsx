@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 const ReviewsAndRatingPage = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;

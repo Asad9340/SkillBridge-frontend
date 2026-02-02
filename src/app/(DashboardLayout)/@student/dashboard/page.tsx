@@ -1,6 +1,8 @@
 import { getStudentAnalytics } from '@/actions/analytics.action';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+export const dynamic = 'force-dynamic';
+
 const StudentDashboard = async () => {
   const { data: booking } = await getStudentAnalytics();
 

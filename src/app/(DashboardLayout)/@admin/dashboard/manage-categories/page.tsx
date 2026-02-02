@@ -1,6 +1,8 @@
 import { getAllCategories } from '@/actions/manage-categories.action';
 import CategoriesTable from '@/components/modules/categories-table/categories-table';
 
+export const dynamic = 'force-dynamic';
+
 const ManageCategoriesPage = async () => {
   const { data } = await getAllCategories();
 

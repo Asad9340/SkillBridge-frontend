@@ -3,6 +3,8 @@ import { getAllSubjects } from '@/actions/manage-subjects.action';
 import { getAllCategories } from '@/actions/manage-categories.action';
 import SubjectsTable from '@/components/modules/subjects-table/subjects-table';
 
+export const dynamic = 'force-dynamic';
+
 export default async function SubjectsPage() {
   const [{ data: subjects }, { data: categories }] = await Promise.all([
     getAllSubjects(),

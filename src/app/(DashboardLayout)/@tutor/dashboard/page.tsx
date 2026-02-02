@@ -4,6 +4,8 @@ import { userService } from '@/services/user.service';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+export const dynamic = 'force-dynamic';
+
 const TutorDashboard = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;
@@ -18,7 +20,7 @@ const TutorDashboard = async () => {
     <div className="container mx-auto py-10 space-y-8">
       <h1 className="text-2xl font-bold">Tutor Dashboard</h1>
 
-      
+
       <div>
         <h2 className="text-lg font-semibold mb-4">Bookings</h2>
 

@@ -2,6 +2,8 @@ import UpdateTutorProfileForm from "@/components/modules/UpdateTutorProfileForm/
 import { tutorService } from "@/services/tutor.service";
 import { userService } from "@/services/user.service";
 
+export const dynamic = 'force-dynamic';
+
 const UpdateProfile =async () => {
     const { data: sessionData } = await userService.getSession();
     const userInfo = sessionData.user;

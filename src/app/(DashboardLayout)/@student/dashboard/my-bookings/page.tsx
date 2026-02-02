@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, BookOpen } from 'lucide-react';
 import AttendCancelButton from '@/components/modules/booking/AttendCancelButton';
 
+export const dynamic = 'force-dynamic';
+
 const MyBookingPage = async () => {
   const { data: bookings } = await getBookingByStudentId();
 

@@ -4,6 +4,8 @@ import ManageAvailabilityTable from '@/components/modules/ManangeAvailabilityTab
 import { getAllSubjects } from '@/actions/manage-subjects.action';
 import { tutorService } from '@/services/tutor.service';
 
+export const dynamic = 'force-dynamic';
+
 const ManageAvailability = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;
