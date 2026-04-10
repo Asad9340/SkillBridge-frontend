@@ -110,11 +110,14 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   };
 
   const router = useRouter();
-  const handleLogout = async () => {
+  const
+
+  handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
           router.push('/login');
+          router.refresh();
         },
       },
     });

@@ -9,12 +9,12 @@ export const dynamic = 'force-dynamic';
 const ManageAvailability = async () => {
   const { data: sessionData } = await userService.getSession();
   const userInfo = sessionData.user;
-  const { data: availabilityData } = await getAllAvailability(userInfo.id);
   const { data: subjects } = await getAllSubjects();
   const { data: tutorProfile } = await tutorService.getTutorProfile(
     userInfo.id,
   );
   const tutorId = tutorProfile.id;
+  const { data: availabilityData } = await getAllAvailability(tutorId);
   return (
     <div className="max-w-7xl mx-auto w-full">
       <div className="mb-4">
