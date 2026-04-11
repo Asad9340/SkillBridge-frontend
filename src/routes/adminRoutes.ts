@@ -13,8 +13,21 @@ export const adminRoutes: Route[] = [
         url: '/dashboard',
       },
       {
+        title: 'Profile',
+        url: '/dashboard/profile',
+      },
+      { title: 'Update Profile', url: '/dashboard/update-profile' },
+      {
+        title: 'Statistics',
+        url: '/dashboard/statistics',
+      },
+      {
         title: 'Manage Users',
         url: '/dashboard/manage-users',
+      },
+      {
+        title: 'Manage Tutors',
+        url: '/dashboard/manage-tutors',
       },
       {
         title: 'Manage Categories',

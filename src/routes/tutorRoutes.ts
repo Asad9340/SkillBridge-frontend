@@ -21,6 +21,10 @@ export const tutorRoutes: Route[] = [
         url: '/dashboard/update-profile',
       },
       {
+        title: 'Statistics',
+        url: '/dashboard/statistics',
+      },
+      {
         title: 'Manage Availability',
         url: '/dashboard/manage-availability',
       },

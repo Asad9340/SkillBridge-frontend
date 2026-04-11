@@ -1,6 +1,5 @@
-
 export interface User {
-  role: "ADMIN" | "TUTOR" | "STUDENT";
+  role: 'SUPER_ADMIN' | 'MANAGER' | 'ADMIN' | 'TUTOR' | 'STUDENT';
   phone: string | null;
   status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
   bio: string | null;

@@ -1,20 +1,20 @@
-import { createEnv } from '@t3-oss/env-core';
-import * as z from 'zod';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
-export const env = createEnv({
-  server: {
-    BACKEND_URL: z.url(),
-    FRONTEND_URL: z.url(),
-    API_URL: z.url(),
-    AUTH_URL: z.url(),
-  },
-  // client: {
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
-  // }
-  runtimeEnv: {
-    BACKEND_URL: process.env.BACKEND_URL,
-    FRONTEND_URL: process.env.FRONTEND_URL,
-    API_URL: process.env.API_URL,
-    AUTH_URL: process.env.AUTH_URL,
-  },
-});
+const API_URL =
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  `${BACKEND_URL}/api/v1`;
+
+const AUTH_URL =
+  process.env.AUTH_URL ||
+  process.env.NEXT_PUBLIC_AUTH_BASE_URL ||
+  `${BACKEND_URL}/api/auth`;
+
+export const env = {
+  BACKEND_URL,
+  FRONTEND_URL,
+  API_URL,
+  AUTH_URL,
+};

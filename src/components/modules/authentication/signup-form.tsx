@@ -57,10 +57,26 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   });
 
   const handleGoogleLogin = async () => {
-    authClient.signIn.social({
-      provider: 'google',
-      callbackURL: 'http://localhost:3000',
-    });
+    const callbackURL =
+      typeof window !== 'undefined'
+        ? window.location.origin
+        : 'http://localhost:3000';
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL,
+      });
+
+      if (error) {
+        toast.error(
+          error.message ||
+            'Google login is unavailable. Please check OAuth configuration.',
+        );
+      }
+    } catch {
+      toast.error('Google login failed. Please try again.');
+    }
   };
 
   return (

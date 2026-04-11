@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -81,7 +81,7 @@ const Carousel = () => {
   };
 
   return (
-    <section className="relative w-full h-[70vh] md:h-[80vh] overflow-hidden rounded-3xl shadow-2xl">
+    <section className="relative w-full h-[60vh] md:h-[65vh] lg:h-[70vh] overflow-hidden rounded-3xl shadow-2xl">
       <div className="absolute inset-0 rounded-3xl">
         {slides.map((slide, index) => (
           <div
@@ -160,6 +160,14 @@ const Carousel = () => {
           style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
         />
       </div>
+
+      <a
+        href="#featured-tutors"
+        className="absolute bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/35 px-4 py-2 text-sm font-medium text-white backdrop-blur-md transition hover:bg-black/50"
+      >
+        Next section
+        <ChevronDown className="h-4 w-4 animate-bounce" />
+      </a>
     </section>
   );
 };

@@ -8,24 +8,44 @@ export const dynamic = 'force-dynamic';
 
 const TutorDashboard = async () => {
   const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData.user;
+  const userInfo = sessionData?.user;
+
+  if (!userInfo?.id) {
+    return <div className="py-10 text-center">No session found.</div>;
+  }
 
   const { data: tutorData } = await tutorService.getTutorProfile(userInfo.id);
-  const { data: analytics } = await getTutorAnalytics(tutorData.id);
+  if (!tutorData?.id) {
+    return <div className="py-10 text-center">Tutor profile not found.</div>;
+  }
 
-  const booking = analytics.bookingSummary;
-  const reviews = analytics.reviewSummary;
+  const { data: analytics } = await getTutorAnalytics(tutorData.id);
+  const booking = analytics?.bookingSummary ?? {
+    totalBookings: 0,
+    pending: 0,
+    confirmed: 0,
+    completed: 0,
+    cancelled: 0,
+  };
+  const reviews = analytics?.reviewSummary ?? {
+    totalReviews: 0,
+    averageRating: 0,
+  };
 
   return (
     <div className="container mx-auto py-10 space-y-8">
-      <h1 className="text-2xl font-bold">Tutor Dashboard</h1>
-
+      <div>
+        <h1 className="text-2xl font-bold">Tutor Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          Track your session demand and feedback performance.
+        </p>
+      </div>
 
       <div>
-        <h2 className="text-lg font-semibold mb-4">Bookings</h2>
+        <h2 className="text-lg font-semibold mb-4">Bookings Overview</h2>
 
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Total</CardTitle>
             </CardHeader>
@@ -34,7 +54,7 @@ const TutorDashboard = async () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Pending</CardTitle>
             </CardHeader>
@@ -43,7 +63,7 @@ const TutorDashboard = async () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Confirmed</CardTitle>
             </CardHeader>
@@ -52,7 +72,7 @@ const TutorDashboard = async () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Completed</CardTitle>
             </CardHeader>
@@ -61,7 +81,7 @@ const TutorDashboard = async () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Cancelled</CardTitle>
             </CardHeader>
@@ -72,12 +92,11 @@ const TutorDashboard = async () => {
         </div>
       </div>
 
-
       <div>
-        <h2 className="text-lg font-semibold mb-4">Reviews</h2>
+        <h2 className="text-lg font-semibold mb-4">Review Performance</h2>
 
         <div className="grid sm:grid-cols-2 gap-5">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Total Reviews</CardTitle>
             </CardHeader>
@@ -86,7 +105,7 @@ const TutorDashboard = async () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Average Rating</CardTitle>
             </CardHeader>

@@ -20,7 +20,7 @@ import { useForm } from '@tanstack/react-form';
 import * as z from 'zod';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const formSchema = z.object({
   email: z.email('Invalid email address'),
@@ -28,6 +28,8 @@ const formSchema = z.object({
 });
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
   const form = useForm({
     defaultValues: {
       email: '',
@@ -47,8 +49,11 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         toast.success('Logged in successfully!', {
           id: toastId,
         });
-        router.push('/');
-        router.refresh();
+
+        setTimeout(() => {
+          router.push(redirectPath);
+          router.refresh();
+        }, 100);
       } catch (error) {
         toast.error('Something went wrong. Please try again.', { id: toastId });
       }
@@ -56,10 +61,26 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   });
 
   const handleGoogleLogin = async () => {
-    authClient.signIn.social({
-      provider: 'google',
-      callbackURL: 'http://localhost:3000',
-    });
+    const callbackURL =
+      typeof window !== 'undefined'
+        ? `${window.location.origin}${redirectPath}`
+        : 'http://localhost:3000';
+
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: 'google',
+        callbackURL,
+      });
+
+      if (error) {
+        toast.error(
+          error.message ||
+            'Google login is unavailable. Please check OAuth configuration.',
+        );
+      }
+    } catch {
+      toast.error('Google login failed. Please try again.');
+    }
   };
 
   return (

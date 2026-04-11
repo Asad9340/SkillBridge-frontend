@@ -15,9 +15,11 @@ import {
 import { NavUser } from '../ui/nav-user';
 import { Route } from '@/types';
 import { adminRoutes } from '@/routes/adminRoutes';
+import { managerRoutes } from '@/routes/managerRoutes';
 import Link from 'next/link';
 import { ROLES } from '@/constants/roles';
 import { studentRoutes } from '@/routes/studentRoutes';
+import { superAdminRoutes } from '@/routes/superAdminRoutes';
 import { tutorRoutes } from '@/routes/tutorRoutes';
 import { usePathname } from 'next/navigation';
 
@@ -45,6 +47,13 @@ export function DashboardSidebar({
   const pathname = usePathname();
   let routes: Route[] = [];
   switch (user.role) {
+    case ROLES.SUPER_ADMIN:
+      routes = superAdminRoutes;
+      break;
+    case ROLES.MANAGER:
+      routes = managerRoutes;
+      break;
+
     case ROLES.ADMIN:
       routes = adminRoutes;
       break;

@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-} from 'lucide-react';
+import { ChevronsUpDown, CreditCard, LogOut } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -25,7 +21,6 @@ import {
 import { UserType } from '../layout/Sidebar';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
-import { ROLES } from '@/constants/roles';
 import Link from 'next/link';
 
 export function NavUser({ user }: { user: UserType }) {
@@ -79,14 +74,12 @@ export function NavUser({ user }: { user: UserType }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuGroup>
-              {user.role !== ROLES.ADMIN && (
-                  <Link href="/dashboard/profile">
+              <Link href="/dashboard/profile">
                 <DropdownMenuItem>
-                    <CreditCard />
-                    Profile
+                  <CreditCard />
+                  Profile
                 </DropdownMenuItem>
-                  </Link>
-              )}
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleLogout()}>

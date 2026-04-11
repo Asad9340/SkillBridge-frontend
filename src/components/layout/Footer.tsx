@@ -5,7 +5,7 @@ import {
   Instagram,
   Mail,
   Phone,
-  MapPin
+  MapPin,
 } from 'lucide-react';
 
 const Footer = () => {
@@ -30,13 +30,22 @@ const Footer = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+              <a
+                href="#"
+                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+              <a
+                href="#"
+                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200">
+              <a
+                href="#"
+                className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -48,17 +57,53 @@ const Footer = () => {
               <span>Platform</span>
             </h4>
             <div className="space-y-3 text-sm">
-              <Link href="/" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Home</span>
+              <Link
+                href="/"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Home
+                </span>
               </Link>
-              <Link href="/about" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">About</span>
+              <Link
+                href="/about"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  About
+                </span>
               </Link>
-              <Link href="/tutors" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Find Tutors</span>
+              <Link
+                href="/blog"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Blog
+                </span>
               </Link>
-              <Link href="/contact" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Contact</span>
+              <Link
+                href="/support"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Support
+                </span>
+              </Link>
+              <Link
+                href="/tutors"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Find Tutors
+                </span>
+              </Link>
+              <Link
+                href="/contact"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Contact
+                </span>
               </Link>
             </div>
           </div>
@@ -69,17 +114,37 @@ const Footer = () => {
               <span>Tutors</span>
             </h4>
             <div className="space-y-3 text-sm">
-              <Link href="/tutor/register" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Join as Tutor</span>
+              <Link
+                href="/tutor/register"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Join as Tutor
+                </span>
               </Link>
-              <Link href="/tutor/dashboard" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Dashboard</span>
+              <Link
+                href="/tutor/dashboard"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Dashboard
+                </span>
               </Link>
-              <Link href="/tutor/schedule" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Schedule</span>
+              <Link
+                href="/tutor/schedule"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Schedule
+                </span>
               </Link>
-              <Link href="/tutor/earnings" className="block text-muted-foreground hover:text-foreground transition-colors group">
-                <span className="group-hover:-translate-x-1 transition-transform duration-200">Earnings</span>
+              <Link
+                href="/tutor/earnings"
+                className="block text-muted-foreground hover:text-foreground transition-colors group"
+              >
+                <span className="group-hover:-translate-x-1 transition-transform duration-200">
+                  Earnings
+                </span>
               </Link>
             </div>
           </div>
@@ -90,7 +155,9 @@ const Footer = () => {
             <div className="space-y-4 text-sm">
               <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                 <Mail className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">hello@skillbridge.com</span>
+                <span className="text-muted-foreground">
+                  hello@skillbridge.com
+                </span>
               </div>
               <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
                 <Phone className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
@@ -111,9 +178,24 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted-foreground">
             <p>© 2026 SkillBridge. All rights reserved.</p>
             <div className="flex items-center gap-6">
-              <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
-              <Link href="/support" className="hover:text-foreground transition-colors">Support</Link>
+              <Link
+                href="/privacy"
+                className="hover:text-foreground transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="hover:text-foreground transition-colors"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/support"
+                className="hover:text-foreground transition-colors"
+              >
+                Support
+              </Link>
             </div>
           </div>
         </div>

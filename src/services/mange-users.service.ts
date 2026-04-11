@@ -49,29 +49,81 @@ export const manageUserService = {
     }
   },
 
-  updateUserProfile: async (
-    userId: string,
-    data: { name: string; image: string; phone: string; bio: string },
-  ) => {
+  updateUserRoleByAdmin: async (userId: string, role: string) => {
     try {
       const cookieStore = await cookies();
-      const res = await fetch(
-        `${env.API_URL}/manage-users/update-student/${userId}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            cookie: cookieStore.toString(),
-          },
-          body: JSON.stringify(data),
-          cache: 'no-store',
+      const res = await fetch(`${env.API_URL}/manage-users/${userId}/role`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          cookie: cookieStore.toString(),
         },
-      );
+        body: JSON.stringify({ role }),
+        cache: 'no-store',
+      });
       if (!res.ok) {
         const err = await res.json();
         return { success: false, message: err?.message };
       }
       return { success: true };
+    } catch {
+      return { success: false, message: 'Something went wrong' };
+    }
+  },
+
+  updateUserProfile: async (
+    userId: string,
+    data: { name: string; phone: string; bio: string; image?: string },
+  ) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(`${env.API_URL}/student-profile/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          cookie: cookieStore.toString(),
+        },
+        body: JSON.stringify(data),
+        cache: 'no-store',
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        return { success: false, message: err?.message };
+      }
+      return { success: true };
+    } catch {
+      return { success: false, message: 'Something went wrong' };
+    }
+  },
+
+  uploadUserAvatar: async (userId: string, formData: FormData) => {
+    try {
+      const cookieStore = await cookies();
+      const res = await fetch(
+        `${env.API_URL}/student-profile/${userId}/avatar`,
+        {
+          method: 'POST',
+          headers: {
+            cookie: cookieStore.toString(),
+          },
+          body: formData,
+          cache: 'no-store',
+        },
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data?.message || 'Failed to upload profile image',
+        };
+      }
+
+      return {
+        success: true,
+        image: data?.data?.image as string | undefined,
+      };
     } catch {
       return { success: false, message: 'Something went wrong' };
     }

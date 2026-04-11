@@ -4,11 +4,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { Star, Clock, BookOpen } from 'lucide-react';
+import {
+  Star,
+  Clock,
+  BookOpen,
+  CalendarDays,
+  ShieldCheck,
+  Shapes,
+} from 'lucide-react';
 import BookSessionButton from '@/components/modules/tutor/BookSessionButton';
-import { User } from '@/types';
+import TutorCard from '@/components/modules/homepage/TutorCard';
+import TutorDetailsActions from '@/components/modules/tutor/TutorDetailsActions';
 import { userService } from '@/services/user.service';
-import { redirect } from 'next/navigation';
+import Image from 'next/image';
 
 const TutorProfileDetailsPage = async ({
   params,
@@ -16,26 +24,59 @@ const TutorProfileDetailsPage = async ({
   params: Promise<{ tutorId: string }>;
 }) => {
   const { data: sessionData } = await userService.getSession();
+  const userRole = sessionData?.user?.role || 'GUEST';
 
-  if (!sessionData?.user) {
-    redirect('/login');
-  }
-  const userInfo = sessionData.user as User;
   const { tutorId } = await params;
   const { data: tutor } = await tutorService.getTutorProfile(tutorId);
-  console.log(tutor);
+
   if (!tutor) {
     return <div className="p-10 text-center">Tutor not found</div>;
   }
 
-  const subjects = [
-    ...new Map(
-      tutor.availability.map((a: any) => [
-        a.subjectId,
-        { name: a.subjectName, category: a.categoryName },
-      ]),
-    ).values(),
-  ];
+  const subjectMap = new Map<string, { name: string; category: string }>(
+    tutor.availability.map((a: any) => [
+      a.subjectId,
+      { name: a.subjectName, category: a.categoryName },
+    ]),
+  );
+  const subjects = [...subjectMap.values()];
+
+  const media = Array.from(
+    new Set([
+      tutor.image,
+      ...tutor.reviews
+        ?.map((review: any) => review.reviewerImage)
+        .filter((image: string | null) => Boolean(image)),
+    ]),
+  ).filter(Boolean) as string[];
+
+  const mediaList = media.length ? media : ['/next.svg', '/globe.svg'];
+
+  const firstCategory = subjects[0]?.category;
+  let relatedTutors: any[] = [];
+
+  if (firstCategory) {
+    const relatedByCategory = await tutorService.getAllTutors({
+      category: firstCategory,
+      limit: '6',
+    });
+
+    relatedTutors =
+      relatedByCategory.data?.data?.data?.filter(
+        (relatedTutor: any) => relatedTutor.userId !== tutorId,
+      ) || [];
+  }
+
+  if (!relatedTutors.length) {
+    const fallbackRelated = await tutorService.getAllTutors({
+      limit: '6',
+    });
+
+    relatedTutors =
+      fallbackRelated.data?.data?.data?.filter(
+        (relatedTutor: any) => relatedTutor.userId !== tutorId,
+      ) || [];
+  }
 
   const initials = tutor.name
     ?.split(' ')
@@ -43,8 +84,20 @@ const TutorProfileDetailsPage = async ({
     .join('')
     .toUpperCase();
 
+  const availableSlots = tutor.availability?.filter(
+    (slot: any) => !slot.isBooked,
+  );
+
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-8">
+      <TutorDetailsActions
+        tutorId={tutorId}
+        tutorName={tutor.name}
+        hasAvailableSlot={availableSlots.length > 0}
+        isLoggedIn={Boolean(sessionData?.user)}
+        userRole={userRole}
+      />
+
       <Card className="rounded-2xl shadow-sm">
         <CardContent className="p-8 flex flex-col md:flex-row gap-8 md:items-center">
           <Avatar className="h-28 w-28 border shadow-sm">
@@ -73,12 +126,86 @@ const TutorProfileDetailsPage = async ({
 
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle>About Tutor</CardTitle>
+          <CardTitle>Media</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {mediaList.slice(0, 3).map((image, index) => (
+              <div
+                key={`${image}-${index}`}
+                className="relative aspect-video overflow-hidden rounded-xl border bg-muted"
+              >
+                <Image
+                  src={image}
+                  alt={`${tutor.name} media ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle>Overview / Description</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground leading-relaxed">
             {tutor.bio || 'No bio provided.'}
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle>Key Information / Specifications / Rules</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">Hourly Rate</p>
+              <p className="text-lg font-semibold">
+                ৳ {tutor.hourlyRate} / hour
+              </p>
+            </div>
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">Average Rating</p>
+              <p className="text-lg font-semibold">
+                {tutor.rating.toFixed(1)} / 5
+              </p>
+            </div>
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">Total Reviews</p>
+              <p className="text-lg font-semibold">{tutor.totalReviews}</p>
+            </div>
+            <div className="rounded-xl border p-4">
+              <p className="text-xs text-muted-foreground">Subject Coverage</p>
+              <p className="text-lg font-semibold">
+                {subjects.length} subjects
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="font-semibold">Booking Rules</h3>
+            <div className="grid gap-2 text-sm text-muted-foreground">
+              <p className="flex items-start gap-2">
+                <ShieldCheck className="h-4 w-4 mt-0.5" />
+                Sessions can be booked only from available slots.
+              </p>
+              <p className="flex items-start gap-2">
+                <CalendarDays className="h-4 w-4 mt-0.5" />
+                Students need an account to confirm bookings.
+              </p>
+              <p className="flex items-start gap-2">
+                <Shapes className="h-4 w-4 mt-0.5" />
+                Each slot is unique and becomes unavailable after booking.
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -96,7 +223,7 @@ const TutorProfileDetailsPage = async ({
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl">
+      <Card id="available-slots" className="rounded-2xl">
         <CardHeader>
           <CardTitle>Available Slots</CardTitle>
         </CardHeader>
@@ -133,16 +260,17 @@ const TutorProfileDetailsPage = async ({
                   tutorId={slot.tutorId}
                   subjectId={slot.subjectId}
                   isBooked={slot.isBooked}
-                  userRole={userInfo.role}
+                  userRole={userRole}
                 />
               </CardContent>
             </Card>
           ))}
         </CardContent>
       </Card>
+
       <Card className="rounded-2xl">
         <CardHeader>
-          <CardTitle>Student Reviews</CardTitle>
+          <CardTitle>Rating / Reviews / Feedback</CardTitle>
         </CardHeader>
 
         <CardContent className="space-y-2">
@@ -180,6 +308,23 @@ const TutorProfileDetailsPage = async ({
             })
           ) : (
             <p className="text-muted-foreground">No reviews yet.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle>Related / Suggested Tutors</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {relatedTutors.length ? (
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {relatedTutors.slice(0, 3).map((relatedTutor: any) => (
+                <TutorCard key={relatedTutor.id} tutor={relatedTutor} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-muted-foreground">No related tutors found.</p>
           )}
         </CardContent>
       </Card>

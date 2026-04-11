@@ -5,56 +5,68 @@ export const dynamic = 'force-dynamic';
 
 const StudentDashboard = async () => {
   const { data: booking } = await getStudentAnalytics();
+  const summary = booking ?? {
+    totalBookings: 0,
+    pending: 0,
+    confirmed: 0,
+    completed: 0,
+    cancelled: 0,
+  };
 
   return (
     <div className="container mx-auto py-10 space-y-8">
-      <h1 className="text-2xl font-bold">Student Dashboard</h1>
+      <div>
+        <h1 className="text-2xl font-bold">Student Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          Monitor your session booking lifecycle in one place.
+        </p>
+      </div>
 
       <div>
-        <h2 className="text-lg font-semibold mb-4">Bookings</h2>
+        <h2 className="text-lg font-semibold mb-4">Bookings Overview</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Total</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold">
-              {booking.totalBookings}
+              {summary.totalBookings}
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Pending</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold">
-              {booking.pending}
+              {summary.pending}
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Confirmed</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold">
-              {booking.confirmed}
+              {summary.confirmed}
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Completed</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold">
-              {booking.completed}
+              {summary.completed}
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>Cancelled</CardTitle>
             </CardHeader>
             <CardContent className="text-2xl font-bold">
-              {booking.cancelled}
+              {summary.cancelled}
             </CardContent>
           </Card>
         </div>

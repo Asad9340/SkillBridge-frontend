@@ -13,10 +13,16 @@ const ManageUsersPage = async () => {
       <div>
         <h1 className="text-2xl font-semibold text-center">Manage Users</h1>
         <p className="text-sm text-muted-foreground text-center">
-          Manage user accounts, roles, and status
+          Admin can manage user accounts only.
         </p>
       </div>
-      <ManageUsersTable users={users} />
+      <ManageUsersTable
+        users={(users ?? []).filter(
+          user => user.role === 'STUDENT' || user.role === 'TUTOR',
+        )}
+        actorRole="ADMIN"
+        allowedRoleOptions={['TUTOR', 'STUDENT']}
+      />
     </div>
   );
 };

@@ -1,9 +1,11 @@
-import TutorCard, { ITutorProfile } from "./TutorCard";
-
+import TutorCard, { ITutorProfile } from './TutorCard';
 
 const FeaturedTutors = ({ allTutors }: { allTutors: ITutorProfile[] }) => {
   return (
-    <section className="py-20 px-6 bg-linear-to-b from-background to-muted/30">
+    <section
+      id="featured-tutors"
+      className="py-20 px-6 bg-linear-to-b from-background to-muted/30"
+    >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <h2 className="text-4xl font-bold mb-3">Top Tutors</h2>

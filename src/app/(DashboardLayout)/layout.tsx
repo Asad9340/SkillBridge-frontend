@@ -6,11 +6,15 @@ import { Menu } from 'lucide-react';
 
 export default async function DashboardLayout({
   admin,
+  manager,
   student,
+  superAdmin,
   tutor,
 }: {
   admin: React.ReactNode;
+  manager: React.ReactNode;
   student: React.ReactNode;
+  superAdmin: React.ReactNode;
   tutor: React.ReactNode;
 }) {
   const { data } = await userService.getSession();
@@ -27,11 +31,15 @@ export default async function DashboardLayout({
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-4">
-        {userInfo?.role === ROLES.ADMIN
-          ? admin
-          : userInfo?.role === ROLES.TUTOR
-            ? tutor
-            : student}
+        {userInfo?.role === ROLES.SUPER_ADMIN
+          ? superAdmin
+          : userInfo?.role === ROLES.MANAGER
+            ? manager
+            : userInfo?.role === ROLES.ADMIN
+                ? admin
+                : userInfo?.role === ROLES.TUTOR
+                  ? tutor
+                  : student}
       </div>
     </SidebarProvider>
   );

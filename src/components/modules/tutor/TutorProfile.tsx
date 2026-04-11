@@ -1,23 +1,24 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ITutorProfile } from '@/types';
 
 export const TutorProfile = ({ tutor }: { tutor: ITutorProfile }) => {
+  const initials = tutor.name
+    .split(' ')
+    .filter(Boolean)
+    .map(part => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-6 space-y-6 shadow-sm">
         <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden ring-2 ring-gray-200 dark:ring-gray-700">
-            <Image
-              src="https://images.unsplash.com/photo-1494790108755-2616b612b786?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=400&h=400"
-              alt={tutor.name}
-              width={128}
-              height={128}
-              className="object-cover"
-            />
+          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full ring-2 ring-gray-200 dark:ring-gray-700 bg-muted text-2xl font-semibold flex items-center justify-center">
+            {initials}
           </div>
 
           <div className="flex-1 text-center md:text-left">

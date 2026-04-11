@@ -51,6 +51,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   const menu = [
     { title: 'Home', url: '/' },
     { title: 'Tutors', url: '/tutors' },
+    { title: 'Blog', url: '/blog' },
     { title: 'About', url: '/about' },
     { title: 'Contact', url: '/contact' },
   ];
@@ -101,7 +102,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
 
     return (
       <div
-        className="flex items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground min-w-[36px]"
+        className="flex items-center justify-center rounded-full bg-muted text-xs font-semibold text-foreground min-w-9"
         style={{ width: size, height: size }}
       >
         {userName.charAt(0).toUpperCase()}
@@ -110,9 +111,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   };
 
   const router = useRouter();
-  const
-
-  handleLogout = async () => {
+  const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
@@ -195,17 +194,15 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    {user.role !== 'ADMIN' && (
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href="dashboard/profile"
-                          className="flex w-full items-center gap-2"
-                        >
-                          <User className="h-4 w-4" />
-                          <span>Profile</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/dashboard/profile"
+                        className="flex w-full items-center gap-2"
+                      >
+                        <User className="h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
                   </div>
                   <DropdownMenuItem
                     className="flex items-center gap-2 border-t cursor-pointer"
@@ -292,17 +289,15 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  {user?.role !== 'ADMIN' && (
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/dashboard/profile"
-                        className="flex items-center gap-2 w-full"
-                      >
-                        <User className="h-4 w-4" />
-                        Profile
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/profile"
+                      className="flex items-center gap-2 w-full"
+                    >
+                      <User className="h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     className="flex items-center gap-2 w-full cursor-pointer border-t"
                     onClick={handleLogout}

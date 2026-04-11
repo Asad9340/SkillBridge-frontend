@@ -25,6 +25,12 @@ const BookSessionButton = ({
   const [loading, setLoading] = useState(false);
   const handleBook = async () => {
     if (isBooked) return;
+    if (userRole === 'GUEST') {
+      router.push(
+        `/login?redirect=${encodeURIComponent(`/tutors/${tutorId}`)}`,
+      );
+      return;
+    }
 
     setLoading(true);
     const toastId = toast.loading('Booking session...');
@@ -57,13 +63,15 @@ const BookSessionButton = ({
       disabled={isBooked || loading || userRole === 'TUTOR'}
       onClick={handleBook}
     >
-      {userRole === 'TUTOR'
-        ? 'Tutors cannot book sessions'
-        : isBooked
-          ? 'Already Booked'
-          : loading
-            ? 'Booking...'
-            : 'Book Session'}
+      {userRole === 'GUEST'
+        ? 'Login to Book'
+        : userRole === 'TUTOR'
+          ? 'Tutors cannot book sessions'
+          : isBooked
+            ? 'Already Booked'
+            : loading
+              ? 'Booking...'
+              : 'Book Session'}
     </Button>
   );
 };

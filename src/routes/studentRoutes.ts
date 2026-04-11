@@ -21,6 +21,10 @@ export const studentRoutes: Route[] = [
         url: '/dashboard/update-profile',
       },
       {
+        title: 'Statistics',
+        url: '/dashboard/statistics',
+      },
+      {
         title: 'Join as Tutor',
         url: '/join-as-tutor',
       },
