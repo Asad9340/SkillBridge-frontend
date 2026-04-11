@@ -7,12 +7,14 @@ import { isTokenExpiringSoon } from '../tokenUtils';
 import { env } from '../../../env';
 
 const API_URL = env.API_URL;
-
+const BACKEND_URL = env.BACKEND_URL;
+const BASE_AUTH_URL = env.API_URL.replace('/api/v1', '');
 interface FetchOptions {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
   cache?: RequestCache;
   tags?: string[];
+  isAuth?: boolean;
 }
 
 async function tryRefreshToken(
@@ -57,7 +59,8 @@ async function httpGet<T>(
   }
 
   const cookieHeader = await getCookieHeader();
-  const url = new URL(`${API_URL}${endpoint}`);
+  const baseUrl = options?.isAuth ? BACKEND_URL : API_URL;
+  const url = new URL(`${baseUrl}${endpoint}`);
 
   if (options?.params) {
     Object.entries(options.params).forEach(([key, value]) => {
@@ -84,6 +87,17 @@ async function httpGet<T>(
   }
 
   const res = await fetch(url.toString(), init);
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw {
+      response: {
+        data: errorData,
+      },
+      message: errorData.message || 'Request failed',
+    };
+  }
+
   return res.json();
 }
 
@@ -101,8 +115,9 @@ async function httpPost<T>(
   }
 
   const cookieHeader = await getCookieHeader();
+  const baseUrl = options?.isAuth ? BASE_AUTH_URL : API_URL;
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -111,6 +126,16 @@ async function httpPost<T>(
     },
     body: JSON.stringify(data),
   });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw {
+      response: {
+        data: errorData,
+      },
+      message: errorData.message || 'Request failed',
+    };
+  }
 
   return res.json();
 }
@@ -129,8 +154,9 @@ async function httpPatch<T>(
   }
 
   const cookieHeader = await getCookieHeader();
+  const baseUrl = options?.isAuth ? BACKEND_URL : API_URL;
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -139,6 +165,16 @@ async function httpPatch<T>(
     },
     body: JSON.stringify(data),
   });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw {
+      response: {
+        data: errorData,
+      },
+      message: errorData.message || 'Request failed',
+    };
+  }
 
   return res.json();
 }
@@ -156,8 +192,9 @@ async function httpDelete<T>(
   }
 
   const cookieHeader = await getCookieHeader();
+  const baseUrl = options?.isAuth ? BACKEND_URL : API_URL;
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(`${baseUrl}${endpoint}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -165,6 +202,16 @@ async function httpDelete<T>(
       ...options?.headers,
     },
   });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw {
+      response: {
+        data: errorData,
+      },
+      message: errorData.message || 'Request failed',
+    };
+  }
 
   return res.json();
 }

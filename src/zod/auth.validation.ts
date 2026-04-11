@@ -23,3 +23,15 @@ export const registerZodSchema = z.object({
 });
 
 export type IRegisterPayload = z.infer<typeof registerZodSchema>;
+
+export const verifyEmailOtpZodSchema = z.object({
+  email: z.email('Invalid email address'),
+  otp: z.string().regex(/^\d{6}$/, 'OTP must be a 6-digit numeric code'),
+});
+
+export const resendEmailOtpZodSchema = z.object({
+  email: z.email('Invalid email address'),
+});
+
+export type IVerifyEmailOtpPayload = z.infer<typeof verifyEmailOtpZodSchema>;
+export type IResendEmailOtpPayload = z.infer<typeof resendEmailOtpZodSchema>;

@@ -18,20 +18,19 @@ import {
 } from '@/components/ui/field';
 import { useForm } from '@tanstack/react-form';
 import { loginZodSchema } from '@/zod/auth.validation';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { loginAction } from '@/app/(CommonLayout)/login/_action';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const redirectPath = searchParams.get('redirect') || '/';
+  const redirectPath = searchParams?.get('redirect') || '/';
 
   const form = useForm({
     defaultValues: {

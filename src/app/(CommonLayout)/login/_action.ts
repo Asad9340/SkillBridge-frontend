@@ -27,6 +27,7 @@ export const loginAction = async (
     const response = await serverHttpClient.post<ILoginResponse>(
       '/api/auth/login',
       parsedPayload.data,
+      { isAuth: true },
     );
 
     const { accessToken, refreshToken, token, user } = response;
@@ -36,16 +37,12 @@ export const loginAction = async (
     await setTokenInCookies('refreshToken', refreshToken);
     await setTokenInCookies('better-auth.session_token', token, 24 * 60 * 60);
 
-    if (!emailVerified) {
-      redirect(`/verify-email?email=${encodeURIComponent(user.email)}`);
-    } else {
-      const targetPath =
-        redirectPath && redirectPath !== '/'
-          ? redirectPath
-          : getDefaultDashboardRoute();
+    const targetPath =
+      redirectPath && redirectPath !== '/'
+        ? redirectPath
+        : getDefaultDashboardRoute();
 
-      redirect(targetPath);
-    }
+    redirect(targetPath);
   } catch (error: any) {
     if (
       error &&
@@ -55,14 +52,6 @@ export const loginAction = async (
       error.digest.startsWith('NEXT_REDIRECT')
     ) {
       throw error;
-    }
-
-    if (
-      error &&
-      error.response &&
-      error.response.data.message === 'Email not verified'
-    ) {
-      redirect(`/verify-email?email=${payload.email}`);
     }
 
     return {

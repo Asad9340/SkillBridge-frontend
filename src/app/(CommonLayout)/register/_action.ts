@@ -24,19 +24,16 @@ export const registerAction = async (
     const response = await serverHttpClient.post<IRegisterResponse>(
       '/api/auth/register',
       parsedPayload.data,
+      { isAuth: true },
     );
 
-    const { accessToken, refreshToken, token, user } = response;
+    const { accessToken, refreshToken, token } = response;
 
     await setTokenInCookies('accessToken', accessToken);
     await setTokenInCookies('refreshToken', refreshToken);
     await setTokenInCookies('better-auth.session_token', token, 24 * 60 * 60);
 
-    if (!user.emailVerified) {
-      redirect(`/verify-email?email=${encodeURIComponent(user.email)}`);
-    } else {
-      redirect(getDefaultDashboardRoute());
-    }
+    redirect(getDefaultDashboardRoute());
   } catch (error: any) {
     if (
       error &&
