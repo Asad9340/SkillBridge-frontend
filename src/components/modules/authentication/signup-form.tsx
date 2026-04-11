@@ -18,14 +18,12 @@ import {
 } from '@/components/ui/field';
 import { useForm } from '@tanstack/react-form';
 import { registerZodSchema } from '@/zod/auth.validation';
-import { useRouter } from 'next/navigation';
-import { registerAction } from '@/app/(CommonLayout)/register/_action';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { registerAction } from '@/app/(CommonLayout)/register/_action';
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -44,29 +42,22 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       setIsLoading(true);
       const toastId = toast.loading('Creating your account...');
       try {
-        const result = (await registerAction(value)) as any;
-
-        if (!result.success) {
-          toast.error(result.message || 'Registration failed', { id: toastId });
-          setServerError(result.message || 'Registration failed');
+        const result = await registerAction(value);
+        // If we reach here, the action returned an error
+        if (result && !result.success) {
+          toast.error(result.message, { id: toastId });
+          setServerError(result.message);
           setIsLoading(false);
-          return;
         }
-
-        toast.success('Account created successfully!', {
-          id: toastId,
-        });
       } catch (error: any) {
+        // NEXT_REDIRECT is thrown by redirect() — let Next.js handle navigation
         if (
-          error &&
-          typeof error === 'object' &&
-          'digest' in error &&
-          typeof error.digest === 'string' &&
-          error.digest.startsWith('NEXT_REDIRECT')
+          error?.digest?.startsWith('NEXT_REDIRECT') ||
+          error?.message === 'NEXT_REDIRECT'
         ) {
+          toast.success('Account created successfully!', { id: toastId });
           throw error;
         }
-
         toast.error('Something went wrong. Please try again.', { id: toastId });
         setServerError('Something went wrong. Please try again.');
         setIsLoading(false);
@@ -74,9 +65,12 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  const handleGoogleLogin = async () => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    window.location.href = `${baseUrl}/api/auth/login/google`;
+  const handleGoogleLogin = () => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_AUTH_BASE_URL ||
+      'https://skill-bridge-backend-nine.vercel.app/api/auth';
+    const callbackURL = `${process.env.NEXT_PUBLIC_FRONTEND_URL || ''}/dashboard`;
+    window.location.href = `${baseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
   };
 
   return (

@@ -21,6 +21,7 @@ import { ROLES } from '@/constants/roles';
 import { studentRoutes } from '@/routes/studentRoutes';
 import { superAdminRoutes } from '@/routes/superAdminRoutes';
 import { tutorRoutes } from '@/routes/tutorRoutes';
+import { organizerRoutes } from '@/routes/organizerRoutes';
 import { usePathname } from 'next/navigation';
 
 // This is sample data.
@@ -62,6 +63,9 @@ export function DashboardSidebar({
       break;
     case ROLES.STUDENT:
       routes = studentRoutes;
+      break;
+    case ROLES.ORGANIZER:
+      routes = organizerRoutes;
       break;
     default:
       routes = [];

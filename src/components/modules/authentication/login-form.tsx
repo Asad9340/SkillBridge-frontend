@@ -19,10 +19,10 @@ import {
 import { useForm } from '@tanstack/react-form';
 import { loginZodSchema } from '@/zod/auth.validation';
 import { useSearchParams } from 'next/navigation';
-import { loginAction } from '@/app/(CommonLayout)/login/_action';
 import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
+import { loginAction } from '@/app/(CommonLayout)/login/_action';
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const searchParams = useSearchParams();
@@ -30,7 +30,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const redirectPath = searchParams?.get('redirect') || '/';
+  const redirectPath = searchParams?.get('redirect') || '/dashboard';
 
   const form = useForm({
     defaultValues: {
@@ -45,29 +45,22 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       setIsLoading(true);
       const toastId = toast.loading('Logging in your account...');
       try {
-        const result = (await loginAction(value, redirectPath)) as any;
-
-        if (!result.success) {
-          toast.error(result.message || 'Login failed', { id: toastId });
-          setServerError(result.message || 'Login failed');
+        const result = await loginAction(value, redirectPath);
+        // If we reach here, the action returned an error (redirect throws, not returns)
+        if (result && !result.success) {
+          toast.error(result.message, { id: toastId });
+          setServerError(result.message);
           setIsLoading(false);
-          return;
         }
-
-        toast.success('Logged in successfully!', {
-          id: toastId,
-        });
       } catch (error: any) {
+        // NEXT_REDIRECT is thrown by redirect() — let Next.js handle navigation
         if (
-          error &&
-          typeof error === 'object' &&
-          'digest' in error &&
-          typeof error.digest === 'string' &&
-          error.digest.startsWith('NEXT_REDIRECT')
+          error?.digest?.startsWith('NEXT_REDIRECT') ||
+          error?.message === 'NEXT_REDIRECT'
         ) {
+          toast.success('Logged in successfully!', { id: toastId });
           throw error;
         }
-
         toast.error('Something went wrong. Please try again.', { id: toastId });
         setServerError('Something went wrong. Please try again.');
         setIsLoading(false);
@@ -75,13 +68,15 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  const handleGoogleLogin = async () => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    const redirect =
+  const handleGoogleLogin = () => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_AUTH_BASE_URL ||
+      'https://skill-bridge-backend-nine.vercel.app/api/auth';
+    const callbackURL =
       redirectPath && redirectPath !== '/'
-        ? `?redirect=${encodeURIComponent(redirectPath)}`
-        : '';
-    window.location.href = `${baseUrl}/api/auth/login/google${redirect}`;
+        ? `${process.env.NEXT_PUBLIC_FRONTEND_URL || ''}${redirectPath}`
+        : `${process.env.NEXT_PUBLIC_FRONTEND_URL || ''}/dashboard`;
+    window.location.href = `${baseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
   };
 
   return (

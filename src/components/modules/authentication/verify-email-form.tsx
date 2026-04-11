@@ -22,12 +22,9 @@ import {
   resendEmailOtpZodSchema,
   verifyEmailOtpZodSchema,
 } from '@/zod/auth.validation';
-import {
-  resendEmailOtpAction,
-  verifyEmailOtpAction,
-} from '@/app/(CommonLayout)/verify-email/_action';
 import { toast } from 'sonner';
 import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface VerifyEmailFormProps extends React.ComponentProps<typeof Card> {
   initialEmail?: string;
@@ -35,10 +32,29 @@ interface VerifyEmailFormProps extends React.ComponentProps<typeof Card> {
 
 const RESEND_COOLDOWN_SECONDS = 60;
 
+const getAuthBaseUrl = () =>
+  process.env.NEXT_PUBLIC_AUTH_BASE_URL ||
+  'https://skill-bridge-backend-nine.vercel.app/api/auth';
+
+const parseJsonSafe = async (res: Response) => {
+  const text = await res.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
+
 export function VerifyEmailForm({
   initialEmail,
   ...props
 }: VerifyEmailFormProps) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -81,13 +97,27 @@ export function VerifyEmailForm({
       const toastId = toast.loading('Verifying OTP...');
 
       try {
-        const result = (await verifyEmailOtpAction(value)) as any;
+        const res = await fetch(`${getAuthBaseUrl()}/email-otp/verify-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: value.email,
+            otp: value.otp,
+            type: 'email-verification',
+          }),
+        });
 
-        if (!result?.success) {
-          toast.error(result?.message || 'OTP verification failed', {
+        const result = (await parseJsonSafe(res)) as any;
+
+        if (!res.ok) {
+          const message = result?.message || 'OTP verification failed';
+          toast.error(message, {
             id: toastId,
           });
-          setServerError(result?.message || 'OTP verification failed');
+          setServerError(message);
           setIsSubmitting(false);
           return;
         }
@@ -95,17 +125,9 @@ export function VerifyEmailForm({
         toast.success(result.message || 'Email verified successfully!', {
           id: toastId,
         });
+        router.push('/login?verified=1');
+        router.refresh();
       } catch (error: any) {
-        if (
-          error &&
-          typeof error === 'object' &&
-          'digest' in error &&
-          typeof error.digest === 'string' &&
-          error.digest.startsWith('NEXT_REDIRECT')
-        ) {
-          throw error;
-        }
-
         toast.error('Something went wrong. Please try again.', {
           id: toastId,
         });
@@ -129,11 +151,27 @@ export function VerifyEmailForm({
     const toastId = toast.loading('Resending OTP...');
 
     try {
-      const result = await resendEmailOtpAction({ email: values.email });
+      const res = await fetch(
+        `${getAuthBaseUrl()}/email-otp/send-verification-otp`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: values.email,
+            type: 'email-verification',
+          }),
+        },
+      );
 
-      if (!result.success) {
-        toast.error(result.message || 'Failed to resend OTP', { id: toastId });
-        setServerError(result.message || 'Failed to resend OTP');
+      const result = (await parseJsonSafe(res)) as any;
+
+      if (!res.ok) {
+        const message = result?.message || 'Failed to resend OTP';
+        toast.error(message, { id: toastId });
+        setServerError(message);
         setIsResending(false);
         return;
       }

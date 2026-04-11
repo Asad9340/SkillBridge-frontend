@@ -25,8 +25,7 @@ import {
 } from '@/components/ui/sheet';
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/theme-toggler';
-import { useRouter } from 'next/navigation';
-import { authClient } from '@/lib/auth-client';
+import { logoutAction } from '@/actions/auth.action';
 
 export interface UserType {
   name: string;
@@ -110,16 +109,8 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
     );
   };
 
-  const router = useRouter();
   const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/login');
-          router.refresh();
-        },
-      },
-    });
+    await logoutAction();
   };
 
   return (

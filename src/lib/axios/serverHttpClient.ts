@@ -8,7 +8,7 @@ import { env } from '../../../env';
 
 const API_URL = env.API_URL;
 const BACKEND_URL = env.BACKEND_URL;
-const BASE_AUTH_URL = env.API_URL.replace('/api/v1', '');
+const BASE_AUTH_URL = env.AUTH_URL;
 interface FetchOptions {
   params?: Record<string, unknown>;
   headers?: Record<string, string>;
@@ -17,11 +17,25 @@ interface FetchOptions {
   isAuth?: boolean;
 }
 
+const parseJsonSafe = async (res: Response): Promise<any> => {
+  const text = await res.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
+
 async function tryRefreshToken(
   accessToken: string,
   refreshToken: string,
 ): Promise<void> {
-  if (!isTokenExpiringSoon(accessToken)) {
+  if (!(await isTokenExpiringSoon(accessToken))) {
     return;
   }
 
@@ -89,16 +103,16 @@ async function httpGet<T>(
   const res = await fetch(url.toString(), init);
 
   if (!res.ok) {
-    const errorData = await res.json();
+    const errorData = await parseJsonSafe(res);
     throw {
       response: {
         data: errorData,
       },
-      message: errorData.message || 'Request failed',
+      message: errorData?.message || 'Request failed',
     };
   }
 
-  return res.json();
+  return (await parseJsonSafe(res)) as T;
 }
 
 async function httpPost<T>(
@@ -128,16 +142,16 @@ async function httpPost<T>(
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
+    const errorData = await parseJsonSafe(res);
     throw {
       response: {
         data: errorData,
       },
-      message: errorData.message || 'Request failed',
+      message: errorData?.message || 'Request failed',
     };
   }
 
-  return res.json();
+  return (await parseJsonSafe(res)) as T;
 }
 
 async function httpPatch<T>(
@@ -167,16 +181,16 @@ async function httpPatch<T>(
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
+    const errorData = await parseJsonSafe(res);
     throw {
       response: {
         data: errorData,
       },
-      message: errorData.message || 'Request failed',
+      message: errorData?.message || 'Request failed',
     };
   }
 
-  return res.json();
+  return (await parseJsonSafe(res)) as T;
 }
 
 async function httpDelete<T>(
@@ -204,16 +218,16 @@ async function httpDelete<T>(
   });
 
   if (!res.ok) {
-    const errorData = await res.json();
+    const errorData = await parseJsonSafe(res);
     throw {
       response: {
         data: errorData,
       },
-      message: errorData.message || 'Request failed',
+      message: errorData?.message || 'Request failed',
     };
   }
 
-  return res.json();
+  return (await parseJsonSafe(res)) as T;
 }
 
 export const serverHttpClient = {

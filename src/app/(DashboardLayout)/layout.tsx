@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { userService } from '@/services/user.service';
 import { DashboardSidebar } from '@/components/layout/Sidebar';
 import { Menu } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({
   admin,
@@ -10,15 +11,21 @@ export default async function DashboardLayout({
   student,
   superAdmin,
   tutor,
+  organizer,
 }: {
   admin: React.ReactNode;
   manager: React.ReactNode;
   student: React.ReactNode;
   superAdmin: React.ReactNode;
   tutor: React.ReactNode;
+  organizer: React.ReactNode;
 }) {
   const { data } = await userService.getSession();
-  const userInfo = data.user;
+  const userInfo = data?.user ?? null;
+
+  if (!userInfo) {
+    redirect('/login');
+  }
 
   return (
     <SidebarProvider>
@@ -36,9 +43,11 @@ export default async function DashboardLayout({
           : userInfo?.role === ROLES.MANAGER
             ? manager
             : userInfo?.role === ROLES.ADMIN
-                ? admin
-                : userInfo?.role === ROLES.TUTOR
-                  ? tutor
+              ? admin
+              : userInfo?.role === ROLES.TUTOR
+                ? tutor
+                : userInfo?.role === ROLES.ORGANIZER
+                  ? organizer
                   : student}
       </div>
     </SidebarProvider>

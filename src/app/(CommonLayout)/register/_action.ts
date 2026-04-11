@@ -1,56 +1,52 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
-import { getDefaultDashboardRoute } from '@/lib/authUtils';
-import { serverHttpClient } from '@/lib/axios/serverHttpClient';
-import { setTokenInCookies } from '@/lib/tokenUtils';
-import { ApiErrorResponse, IRegisterResponse } from '@/types/auth.types';
-import { IRegisterPayload, registerZodSchema } from '@/zod/auth.validation';
 import { redirect } from 'next/navigation';
+import { setTokenInCookies } from '@/lib/tokenUtils';
+import { env } from '../../../../env';
 
-export const registerAction = async (
-  payload: IRegisterPayload,
-): Promise<{ success: boolean; message: string } | ApiErrorResponse> => {
-  const parsedPayload = registerZodSchema.safeParse(payload);
-
-  if (!parsedPayload.success) {
-    const firstError = parsedPayload.error.issues[0].message || 'Invalid input';
-    return {
-      success: false,
-      message: firstError,
-    };
-  }
+export async function registerAction(payload: {
+  name: string;
+  email: string;
+  password: string;
+}): Promise<{ success: boolean; message: string } | never> {
+  let res: Response;
   try {
-    const response = await serverHttpClient.post<IRegisterResponse>(
-      '/api/auth/register',
-      parsedPayload.data,
-      { isAuth: true },
-    );
-
-    const { accessToken, refreshToken, token } = response;
-
-    await setTokenInCookies('accessToken', accessToken);
-    await setTokenInCookies('refreshToken', refreshToken);
-    await setTokenInCookies('better-auth.session_token', token, 24 * 60 * 60);
-
-    redirect(getDefaultDashboardRoute());
-  } catch (error: any) {
-    if (
-      error &&
-      typeof error === 'object' &&
-      'digest' in error &&
-      typeof error.digest === 'string' &&
-      error.digest.startsWith('NEXT_REDIRECT')
-    ) {
-      throw error;
-    }
-
+    res = await fetch(`${env.API_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: env.FRONTEND_URL,
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch {
     return {
       success: false,
-      message:
-        error?.response?.data?.message ||
-        error?.message ||
-        'Registration failed',
+      message: 'Unable to reach the server. Please try again.',
     };
   }
-};
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    return {
+      success: false,
+      message: data?.message || 'Registration failed. Please try again.',
+    };
+  }
+
+  const { accessToken, refreshToken, token } = data?.data ?? {};
+
+  if (!token) {
+    return {
+      success: false,
+      message: 'Registration failed. No session token received.',
+    };
+  }
+
+  if (accessToken) await setTokenInCookies('accessToken', accessToken);
+  if (refreshToken) await setTokenInCookies('refreshToken', refreshToken);
+  await setTokenInCookies('better-auth.session_token', token);
+
+  redirect('/dashboard');
+}
