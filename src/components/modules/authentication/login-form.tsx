@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import {
   Card,
@@ -17,70 +17,72 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { useForm } from '@tanstack/react-form';
-import * as z from 'zod';
-import { authClient } from '@/lib/auth-client';
-import { toast } from 'sonner';
+import { loginZodSchema } from '@/zod/auth.validation';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { loginAction } from '@/app/(CommonLayout)/login/_action';
+import { toast } from 'sonner';
+import { Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
-const formSchema = z.object({
-  email: z.email('Invalid email address'),
-  password: z.string().min(6, 'Minimum length is 6 character'),
-});
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams?.get('redirect') || '/dashboard';
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const redirectPath = searchParams.get('redirect') || '/';
+
   const form = useForm({
     defaultValues: {
       email: '',
       password: '',
     },
     validators: {
-      onChange: formSchema,
+      onChange: loginZodSchema,
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading('LogIn your account...');
+      setServerError(null);
+      setIsLoading(true);
+      const toastId = toast.loading('Logging in your account...');
       try {
-        const { data, error } = await authClient.signIn.email(value);
-        if (error) {
-          toast.error(error.message, { id: toastId });
+        const result = (await loginAction(value, redirectPath)) as any;
+
+        if (!result.success) {
+          toast.error(result.message || 'Login failed', { id: toastId });
+          setServerError(result.message || 'Login failed');
+          setIsLoading(false);
           return;
         }
+
         toast.success('Logged in successfully!', {
           id: toastId,
         });
+      } catch (error: any) {
+        if (
+          error &&
+          typeof error === 'object' &&
+          'digest' in error &&
+          typeof error.digest === 'string' &&
+          error.digest.startsWith('NEXT_REDIRECT')
+        ) {
+          throw error;
+        }
 
-        setTimeout(() => {
-          router.push(redirectPath);
-          router.refresh();
-        }, 100);
-      } catch (error) {
         toast.error('Something went wrong. Please try again.', { id: toastId });
+        setServerError('Something went wrong. Please try again.');
+        setIsLoading(false);
       }
     },
   });
 
   const handleGoogleLogin = async () => {
-    const callbackURL =
-      typeof window !== 'undefined'
-        ? `${window.location.origin}${redirectPath}`
-        : 'http://localhost:3000';
-
-    try {
-      const { error } = await authClient.signIn.social({
-        provider: 'google',
-        callbackURL,
-      });
-
-      if (error) {
-        toast.error(
-          error.message ||
-            'Google login is unavailable. Please check OAuth configuration.',
-        );
-      }
-    } catch {
-      toast.error('Google login failed. Please try again.');
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const redirect =
+      redirectPath && redirectPath !== '/'
+        ? `?redirect=${encodeURIComponent(redirectPath)}`
+        : '';
+    window.location.href = `${baseUrl}/api/auth/login/google${redirect}`;
   };
 
   return (
@@ -93,14 +95,17 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       </CardHeader>
       <CardContent>
         <form
-          id="register-form"
+          id="login-form"
           onSubmit={e => {
             e.preventDefault();
             form.handleSubmit();
           }}
         >
           <FieldGroup>
-            <form.Field name="email">
+            <form.Field
+              name="email"
+              validators={{ onChange: loginZodSchema.shape.email }}
+            >
               {field => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -124,22 +129,43 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
               }}
             </form.Field>
 
-            <form.Field name="password">
+            <form.Field
+              name="password"
+              validators={{ onChange: loginZodSchema.shape.password }}
+            >
               {field => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field>
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                    <Input
-                      type="password"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      aria-invalid={isInvalid}
-                      autoComplete="off"
-                      onChange={e => field.handleChange(e.target.value)}
-                    />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        aria-invalid={isInvalid}
+                        autoComplete="off"
+                        onChange={e => field.handleChange(e.target.value)}
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => setShowPassword(value => !value)}
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-1/2 right-2 -translate-y-1/2"
+                        aria-label={
+                          showPassword ? 'Hide password' : 'Show password'
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff className="size-4" aria-hidden="true" />
+                        ) : (
+                          <Eye className="size-4" aria-hidden="true" />
+                        )}
+                      </Button>
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -149,16 +175,27 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             </form.Field>
           </FieldGroup>
         </form>
+        {serverError && (
+          <div className="mt-4 p-3 bg-destructive/10 border border-destructive text-destructive rounded-md text-sm">
+            {serverError}
+          </div>
+        )}
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
-        <Button form="register-form" type="submit" className="w-full">
-          Login
+        <Button
+          form="login-form"
+          type="submit"
+          className="w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Logging in...' : 'Login'}
         </Button>
         <Button
           variant="outline"
           className="w-full"
           onClick={() => handleGoogleLogin()}
           type="button"
+          disabled={isLoading}
         >
           Continue with Google
         </Button>

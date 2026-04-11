@@ -17,12 +17,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Read session cookie (BetterAuth sets this on sign-in)
+  // Read all authentication cookies
+  const accessToken = request.cookies.get('accessToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
   const sessionToken =
     request.cookies.get('better-auth.session_token')?.value ||
     request.cookies.get('better-auth.session-token')?.value;
 
-  const isLoggedIn = !!sessionToken;
+  // User is logged in if they have all required tokens
+  const isLoggedIn = !!(accessToken && refreshToken && sessionToken);
 
   // If user is on an auth page (login/register) but already logged in, redirect to dashboard
   if (isAuthRoute(pathname) && isLoggedIn) {
@@ -31,7 +34,7 @@ export async function proxy(request: NextRequest) {
     );
   }
 
-  // If user tries to access protected route without session, redirect to login
+  // If user tries to access protected route without all tokens, redirect to login
   if (isProtectedRoute(pathname) && !isLoggedIn) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);

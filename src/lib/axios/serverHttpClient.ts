@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'server-only';
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { getNewTokensWithRefreshToken } from '@/services/auth.services';
+import { isTokenExpiringSoon } from '../tokenUtils';
 import { env } from '../../../env';
 
 const API_URL = env.API_URL;
@@ -10,6 +13,27 @@ interface FetchOptions {
   headers?: Record<string, string>;
   cache?: RequestCache;
   tags?: string[];
+}
+
+async function tryRefreshToken(
+  accessToken: string,
+  refreshToken: string,
+): Promise<void> {
+  if (!isTokenExpiringSoon(accessToken)) {
+    return;
+  }
+
+  const requestHeader = await headers();
+
+  if (requestHeader.get('x-token-refreshed') === '1') {
+    return;
+  }
+
+  try {
+    await getNewTokensWithRefreshToken(refreshToken);
+  } catch (error: any) {
+    console.error('Error refreshing token in server http client:', error);
+  }
 }
 
 async function getCookieHeader(): Promise<string> {
@@ -24,6 +48,14 @@ async function httpGet<T>(
   endpoint: string,
   options?: FetchOptions,
 ): Promise<T> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+  const refreshToken = cookieStore.get('refreshToken')?.value;
+
+  if (accessToken && refreshToken) {
+    await tryRefreshToken(accessToken, refreshToken);
+  }
+
   const cookieHeader = await getCookieHeader();
   const url = new URL(`${API_URL}${endpoint}`);
 
@@ -60,6 +92,14 @@ async function httpPost<T>(
   data: unknown,
   options?: FetchOptions,
 ): Promise<T> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+  const refreshToken = cookieStore.get('refreshToken')?.value;
+
+  if (accessToken && refreshToken) {
+    await tryRefreshToken(accessToken, refreshToken);
+  }
+
   const cookieHeader = await getCookieHeader();
 
   const res = await fetch(`${API_URL}${endpoint}`, {
@@ -80,6 +120,14 @@ async function httpPatch<T>(
   data: unknown,
   options?: FetchOptions,
 ): Promise<T> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+  const refreshToken = cookieStore.get('refreshToken')?.value;
+
+  if (accessToken && refreshToken) {
+    await tryRefreshToken(accessToken, refreshToken);
+  }
+
   const cookieHeader = await getCookieHeader();
 
   const res = await fetch(`${API_URL}${endpoint}`, {
@@ -99,6 +147,14 @@ async function httpDelete<T>(
   endpoint: string,
   options?: FetchOptions,
 ): Promise<T> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+  const refreshToken = cookieStore.get('refreshToken')?.value;
+
+  if (accessToken && refreshToken) {
+    await tryRefreshToken(accessToken, refreshToken);
+  }
+
   const cookieHeader = await getCookieHeader();
 
   const res = await fetch(`${API_URL}${endpoint}`, {
