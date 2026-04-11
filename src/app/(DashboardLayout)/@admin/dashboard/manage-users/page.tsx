@@ -1,10 +1,13 @@
 import { getAllUsersByAdmin } from '@/actions/manage-users.action';
 import ManageUsersTable from './../../../../../components/modules/user-table/user-table';
+import { User } from '@/types/user.type';
 
 export const dynamic = 'force-dynamic';
 
 const ManageUsersPage = async () => {
   const { data: users, error } = await getAllUsersByAdmin();
+  const typedUsers: User[] = Array.isArray(users) ? (users as User[]) : [];
+
   if (error) {
     return <div>Failed to load users</div>;
   }
@@ -17,7 +20,7 @@ const ManageUsersPage = async () => {
         </p>
       </div>
       <ManageUsersTable
-        users={(users ?? []).filter(
+        users={typedUsers.filter(
           user => user.role === 'STUDENT' || user.role === 'TUTOR',
         )}
         actorRole="ADMIN"

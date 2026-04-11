@@ -29,7 +29,7 @@ const formSchema = z.object({
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/dashboard';
+  const redirectPath = searchParams?.get('redirect') || '/dashboard';
   const form = useForm({
     defaultValues: {
       email: '',
