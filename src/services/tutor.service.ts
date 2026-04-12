@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
@@ -11,13 +11,16 @@ interface ServiceOptions {
 }
 export interface GetTutorsParams {
   search?: string;
-  category?: string;
   subject?: string;
+  category?: string;
   minPrice?: string;
   maxPrice?: string;
+  minRating?: string;
   rating?: string;
   page?: string;
   limit?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 interface ServiceOptions {
@@ -26,7 +29,6 @@ interface ServiceOptions {
 }
 
 export const tutorService = {
-
   getAllTutors: async function (
     params?: GetTutorsParams,
     options?: ServiceOptions,
@@ -57,9 +59,9 @@ export const tutorService = {
   },
   getTutorProfile: async (userId: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/tutors-profile/${userId}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['tutor-profile'] },
       });
@@ -80,12 +82,12 @@ export const tutorService = {
     id: string,
     payload: { bio: string; hourlyRate: number },
   ) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/tutors-profile/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });
@@ -98,17 +100,62 @@ export const tutorService = {
     bio: string;
     hourlyRate: number;
   }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/tutors-profile`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
     updateTag('tutor-profile');
     return { success: true };
+  },
+
+  /**
+   * Returns the TutorProfile for the given userId, auto-creating a default
+   * one (hourlyRate: 0) if it does not yet exist in the database.
+   * This ensures TUTOR-role users always have a profile to work with.
+   */
+  ensureTutorProfile: async (userId: string) => {
+    try {
+      const cookie = await getCookieString();
+
+      // Try to fetch existing profile
+      const existing = await fetch(`${API_URL}/tutors-profile/${userId}`, {
+        headers: { cookie },
+        cache: 'no-store',
+      });
+      if (existing.ok) {
+        const json = await existing.json();
+        if (json.success && json.data) return { data: json.data, error: null };
+      }
+
+      // Profile not found — create a default one
+      const createRes = await fetch(`${API_URL}/tutors-profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', cookie },
+        body: JSON.stringify({ userId, hourlyRate: 0 }),
+        cache: 'no-store',
+      });
+      if (!createRes.ok) {
+        return { data: null, error: 'Failed to create tutor profile' };
+      }
+
+      // Fetch the freshly created profile
+      const fresh = await fetch(`${API_URL}/tutors-profile/${userId}`, {
+        headers: { cookie },
+        cache: 'no-store',
+      });
+      if (!fresh.ok) return { data: null, error: 'Failed to reload profile' };
+      const freshJson = await fresh.json();
+      return freshJson.success
+        ? { data: freshJson.data, error: null }
+        : { data: null, error: freshJson.message };
+    } catch (error) {
+      return { data: null, error };
+    }
   },
 };

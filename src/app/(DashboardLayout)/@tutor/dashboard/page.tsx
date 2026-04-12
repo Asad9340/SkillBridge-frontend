@@ -1,22 +1,27 @@
 import { getTutorAnalytics } from '@/actions/analytics.action';
 import { tutorService } from '@/services/tutor.service';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const dynamic = 'force-dynamic';
 
 const TutorDashboard = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData?.user;
+  const sessionUser = await getSessionUser();
 
-  if (!userInfo?.id) {
+  if (!sessionUser?.id) {
     return <div className="py-10 text-center">No session found.</div>;
   }
 
-  const { data: tutorData } = await tutorService.getTutorProfile(userInfo.id);
+  const userId = sessionUser.id;
+
+  const { data: tutorData } = await tutorService.ensureTutorProfile(userId);
   if (!tutorData?.id) {
-    return <div className="py-10 text-center">Tutor profile not found.</div>;
+    return (
+      <div className="py-10 text-center">
+        Unable to load tutor profile. Please try again.
+      </div>
+    );
   }
 
   const { data: analytics } = await getTutorAnalytics(tutorData.id);

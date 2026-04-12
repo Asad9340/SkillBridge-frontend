@@ -1,12 +1,11 @@
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 import { UserProfileView } from '@/components/modules/profile/UserProfileView';
 import { User } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 const UserProfile = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData?.user as User;
+  const userInfo = (await getSessionUser()) as User | null;
 
   if (!userInfo) {
     return (

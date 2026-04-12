@@ -1,14 +1,14 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const ReviewService = {
   getAllReviewByTutorId: async (tutorId: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/reviews/${tutorId}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['all-review'] },
       });
@@ -25,9 +25,9 @@ export const ReviewService = {
   },
   GetAllRatingPublic: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/reviews/`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['all-review-public'] },
       });
@@ -48,12 +48,12 @@ export const ReviewService = {
     rating: number;
     comment: string;
   }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/reviews`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });

@@ -2,7 +2,7 @@ import { Route } from '@/types';
 
 export const organizerRoutes: Route[] = [
   {
-    title: 'Organizer Profile',
+    title: 'Organizer',
     items: [
       { title: 'Home', url: '/' },
       { title: 'Dashboard', url: '/dashboard' },

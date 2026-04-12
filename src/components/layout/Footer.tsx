@@ -7,6 +7,7 @@ import {
   Phone,
   MapPin,
 } from 'lucide-react';
+import SkillBridgeLogo from '../ui/SkillBridgeLogo';
 
 const Footer = () => {
   return (
@@ -16,19 +17,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">S</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-2xl bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                  SkillBridge
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Connect with expert tutors instantly
-                </p>
-              </div>
-            </div>
+            <SkillBridgeLogo textSize="md" className="mb-1" />
+            <p className="text-sm text-muted-foreground">
+              Connect with expert tutors instantly
+            </p>
             <div className="flex gap-2">
               <a
                 href="#"

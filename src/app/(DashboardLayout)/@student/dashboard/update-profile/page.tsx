@@ -1,17 +1,21 @@
-import UpdateUserProfileForm from "@/components/modules/UpdateUserProfileForm/UpdateUserProfileForm";
-import { userService } from "@/services/user.service";
-import { User } from "@/types";
+import UpdateUserProfileForm from '@/components/modules/UpdateUserProfileForm/UpdateUserProfileForm';
+import { getSessionUser } from '@/lib/getSessionUser';
+import { User } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-const UpdateUserProfile = async() => {
-    const { data: sessionData } = await userService.getSession();
-    const userInfo = sessionData?.user as User;
-  return (
-    <div>
-      <UpdateUserProfileForm user={userInfo} />
-    </div>
-  );
-}
+const UpdateUserProfile = async () => {
+  const userInfo = (await getSessionUser()) as User | null;
 
-export default UpdateUserProfile
+  if (!userInfo) {
+    return (
+      <div className="py-12 text-center text-muted-foreground">
+        No user session found
+      </div>
+    );
+  }
+
+  return <UpdateUserProfileForm user={userInfo} />;
+};
+
+export default UpdateUserProfile;

@@ -2,40 +2,16 @@ import { Route } from '@/types';
 
 export const tutorRoutes: Route[] = [
   {
-    title: 'Tutor Profile',
+    title: 'Tutor',
     items: [
-      {
-        title: 'Home',
-        url: '/',
-      },
-      {
-        title: 'Dashboard',
-        url: '/dashboard',
-      },
-      {
-        title: 'Profile',
-        url: '/dashboard/profile',
-      },
-      {
-        title: 'Update Profile',
-        url: '/dashboard/update-profile',
-      },
-      {
-        title: 'Statistics',
-        url: '/dashboard/statistics',
-      },
-      {
-        title: 'Manage Availability',
-        url: '/dashboard/manage-availability',
-      },
-      {
-        title: 'Manage Session',
-        url: '/dashboard/manage-session',
-      },
-      {
-        title: 'Reviews and Rating',
-        url: '/dashboard/reviews-and-rating',
-      },
+      { title: 'Home', url: '/' },
+      { title: 'Dashboard', url: '/dashboard' },
+      { title: 'Manage Availability', url: '/dashboard/manage-availability' },
+      { title: 'Manage Sessions', url: '/dashboard/manage-session' },
+      { title: 'Reviews & Ratings', url: '/dashboard/reviews-and-rating' },
+      { title: 'Statistics', url: '/dashboard/statistics' },
+      { title: 'Profile', url: '/dashboard/profile' },
+      { title: 'Update Profile', url: '/dashboard/update-profile' },
     ],
   },
 ];

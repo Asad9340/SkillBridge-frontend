@@ -1,14 +1,14 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const AnalyticsService = {
   getTutorAnalytics: async (tutorId: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/analytics/tutor/${tutorId}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['analytics-tutor'] },
       });
@@ -25,9 +25,9 @@ export const AnalyticsService = {
   },
   getStudentAnalytics: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/analytics/student`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['analytics-student'] },
       });
@@ -44,9 +44,9 @@ export const AnalyticsService = {
   },
   getAdminAnalytics: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/analytics/admin`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['analytics-admin'] },
       });

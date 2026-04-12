@@ -1,25 +1,19 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const manageCategoryService = {
   getAllCategories: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/categories`, {
-        headers: {
-          cookie: cookieStore.toString(),
-        },
+        headers: { cookie },
         cache: 'no-store',
-        next: {
-          tags: ['admin-categories'],
-        },
+        next: { tags: ['admin-categories'] },
       });
-
       const json = await res.json();
-
       if (json.success) {
         return { data: json.data, error: null };
       }
@@ -29,43 +23,35 @@ export const manageCategoryService = {
     }
   },
   createCategory: async (payload: { name: string; description?: string }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/categories`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
-      },
+      headers: { 'Content-Type': 'application/json', cookie },
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
     updateTag('admin-categories');
     return { success: true };
   },
-
   updateCategory: async (
     id: string,
     payload: { name: string; description?: string },
   ) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
-      },
+      headers: { 'Content-Type': 'application/json', cookie },
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
     updateTag('admin-categories');
     return { success: true };
   },
-
   deleteCategory: async (id: string) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/categories/${id}`, {
       method: 'DELETE',
-      headers: { cookie: cookieStore.toString() },
+      headers: { cookie },
     });
     if (!res.ok) return { success: false };
     updateTag('admin-categories');

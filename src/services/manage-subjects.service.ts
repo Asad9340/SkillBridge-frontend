@@ -1,15 +1,15 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const manageSubjectService = {
   getAllSubjects: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/subjects`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['admin-subjects'] },
       });
@@ -22,13 +22,10 @@ export const manageSubjectService = {
     }
   },
   createSubject: async (payload: { name: string; categoryId: string }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/subjects`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
-      },
+      headers: { 'Content-Type': 'application/json', cookie },
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
@@ -39,13 +36,10 @@ export const manageSubjectService = {
     id: string,
     payload: { name: string; categoryId: string },
   ) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/subjects/${id}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
-      },
+      headers: { 'Content-Type': 'application/json', cookie },
       body: JSON.stringify(payload),
     });
     if (!res.ok) return { success: false };
@@ -53,10 +47,10 @@ export const manageSubjectService = {
     return { success: true };
   },
   deleteSubject: async (id: string) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/subjects/${id}`, {
       method: 'DELETE',
-      headers: { cookie: cookieStore.toString() },
+      headers: { cookie },
     });
     if (!res.ok) return { success: false };
     updateTag('admin-subjects');

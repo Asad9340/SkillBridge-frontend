@@ -1,15 +1,29 @@
-import { TutorProfile } from "@/components/modules/tutor/TutorProfile";
-import { tutorService } from "@/services/tutor.service";
-import { userService } from "@/services/user.service";
+import { TutorProfile } from '@/components/modules/tutor/TutorProfile';
+import { tutorService } from '@/services/tutor.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 
 export const dynamic = 'force-dynamic';
 
 const TutorProfilePage = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData.user;
-  const { data: tutorData } = await tutorService.getTutorProfile(userInfo.id);
+  const sessionUser = await getSessionUser();
+
+  if (!sessionUser?.id) {
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        No session found.
+      </div>
+    );
+  }
+
+  const { data: tutorData } = await tutorService.ensureTutorProfile(
+    sessionUser.id,
+  );
   if (!tutorData) {
-    return <div>No tutor profile found</div>;
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        Unable to load tutor profile. Please try again.
+      </div>
+    );
   }
 
   return <TutorProfile tutor={tutorData} />;

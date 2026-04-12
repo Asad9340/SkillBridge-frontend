@@ -1,8 +1,13 @@
 import { ROLES } from '@/constants/roles';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
 import { userService } from '@/services/user.service';
 import { DashboardSidebar } from '@/components/layout/Sidebar';
-import { Menu } from 'lucide-react';
+import { cookies } from 'next/headers';
+import { jwtUtils } from '@/lib/jwtUtils';
 import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({
@@ -20,8 +25,51 @@ export default async function DashboardLayout({
   tutor: React.ReactNode;
   organizer: React.ReactNode;
 }) {
-  const { data } = await userService.getSession();
-  const userInfo = data?.user ?? null;
+  // Fast path: decode JWT from accessToken cookie (no network call needed)
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
+
+  let userInfo = null;
+
+  if (accessToken) {
+    const decoded = jwtUtils.decodedToken(accessToken);
+    if (decoded?.userId) {
+      userInfo = {
+        id: decoded.userId as string,
+        name: (decoded.name as string) ?? '',
+        email: (decoded.email as string) ?? '',
+        role: (decoded.role as string) ?? 'STUDENT',
+        emailVerified: (decoded.emailVerified as boolean) ?? false,
+        image: null,
+        createdAt: '',
+        updatedAt: '',
+        phone: '',
+        status: 'ACTIVE',
+        bio: '',
+      };
+    }
+  }
+
+  // Fallback: call getSession if JWT decode failed (e.g., Google OAuth users without accessToken)
+  if (!userInfo) {
+    const { data } = await userService.getSession();
+    if (data?.user) {
+      const u = data.user;
+      userInfo = {
+        id: u.id,
+        name: u.name ?? '',
+        email: u.email ?? '',
+        role: u.role ?? 'STUDENT',
+        emailVerified: u.emailVerified ?? false,
+        image: u.image ?? null,
+        createdAt: '',
+        updatedAt: '',
+        phone: '',
+        status: u.status ?? 'ACTIVE',
+        bio: '',
+      };
+    }
+  }
 
   if (!userInfo) {
     redirect('/login');
@@ -31,25 +79,25 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <DashboardSidebar user={userInfo} />
 
-      <div className="md:hidden p-2">
-        <SidebarTrigger className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700">
-          <Menu className="w-6 h-6" />
-        </SidebarTrigger>
-      </div>
+      <SidebarInset>
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+          <SidebarTrigger className="-ml-1" />
+        </header>
 
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        {userInfo?.role === ROLES.SUPER_ADMIN
-          ? superAdmin
-          : userInfo?.role === ROLES.MANAGER
-            ? manager
-            : userInfo?.role === ROLES.ADMIN
-              ? admin
-              : userInfo?.role === ROLES.TUTOR
-                ? tutor
-                : userInfo?.role === ROLES.ORGANIZER
-                  ? organizer
-                  : student}
-      </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          {userInfo?.role === ROLES.SUPER_ADMIN
+            ? superAdmin
+            : userInfo?.role === ROLES.MANAGER
+              ? manager
+              : userInfo?.role === ROLES.ADMIN
+                ? admin
+                : userInfo?.role === ROLES.TUTOR
+                  ? tutor
+                  : userInfo?.role === ROLES.ORGANIZER
+                    ? organizer
+                    : student}
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 }

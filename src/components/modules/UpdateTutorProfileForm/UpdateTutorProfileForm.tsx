@@ -2,6 +2,7 @@
 
 import { ITutorProfile } from '@/types';
 import { useForm } from '@tanstack/react-form';
+import { ChangeEvent, useState } from 'react';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,10 @@ import { Label } from '@/components/ui/label';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { toast } from 'sonner';
 import { UpdateTutorProfile } from '@/actions/manage-tutor.action';
+import { uploadUserAvatar } from '@/actions/manage-users.action';
 import { useRouter } from 'next/navigation';
+import { ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 const profileSchema = z.object({
   id: z.string(),
@@ -20,7 +24,18 @@ const profileSchema = z.object({
 });
 
 const UpdateTutorProfileForm = ({ tutor }: { tutor: ITutorProfile }) => {
-    const router = useRouter();
+  const router = useRouter();
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    tutor.image || null,
+  );
+
+  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setAvatarFile(file);
+    if (file) setAvatarPreview(URL.createObjectURL(file));
+  };
+
   const form = useForm({
     defaultValues: {
       id: tutor.id,
@@ -36,13 +51,28 @@ const UpdateTutorProfileForm = ({ tutor }: { tutor: ITutorProfile }) => {
       };
       const toastId = toast.loading('Updating Profile...');
       try {
+        if (avatarFile) {
+          const avatarFormData = new FormData();
+          avatarFormData.append('image', avatarFile);
+          const uploadRes = await uploadUserAvatar(
+            tutor.userId,
+            avatarFormData,
+          );
+          if (!uploadRes.success) {
+            toast.error(uploadRes.message || 'Image upload failed.', {
+              id: toastId,
+            });
+            return;
+          }
+        }
+
         const res = await UpdateTutorProfile(id, data);
         if (!res.success) {
           toast.error('Operation failed', { id: toastId });
           return;
         }
         toast.success('Successfully updated profile', { id: toastId });
-        router.push('/dashboard/profile')
+        router.push('/dashboard/profile');
       } catch {
         toast.error('Something went wrong', { id: toastId });
       }
@@ -64,6 +94,30 @@ const UpdateTutorProfileForm = ({ tutor }: { tutor: ITutorProfile }) => {
             }}
             className="space-y-6"
           >
+            {/* Avatar upload */}
+            <div className="space-y-3">
+              <Label className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-primary" />
+                Profile Image
+              </Label>
+              <div className="flex items-center gap-4">
+                {avatarPreview && (
+                  <Image
+                    src={avatarPreview}
+                    alt="Preview"
+                    width={80}
+                    height={80}
+                    className="rounded-full object-cover border w-20 h-20"
+                  />
+                )}
+                <Input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={handleAvatarChange}
+                  className="max-w-xs"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <Label>Name</Label>
               <Input value={tutor.name} disabled className="bg-muted/50" />

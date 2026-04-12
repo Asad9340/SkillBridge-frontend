@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getAllReviewByTutorId } from '@/actions/reviews.action';
 import { tutorService } from '@/services/tutor.service';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Star } from 'lucide-react';
@@ -9,10 +9,26 @@ import { Star } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 const ReviewsAndRatingPage = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData.user;
+  const sessionUser = await getSessionUser();
 
-  const { data: tutorData } = await tutorService.getTutorProfile(userInfo.id);
+  if (!sessionUser?.id) {
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        No session found.
+      </div>
+    );
+  }
+
+  const { data: tutorData } = await tutorService.ensureTutorProfile(
+    sessionUser.id,
+  );
+  if (!tutorData?.id) {
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        Unable to load tutor profile. Please try again.
+      </div>
+    );
+  }
   const { data: reviews } = await getAllReviewByTutorId(tutorData.id);
 
   if (!reviews?.length) {

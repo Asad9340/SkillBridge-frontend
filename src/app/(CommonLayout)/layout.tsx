@@ -2,13 +2,12 @@ import { Suspense } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { NavbarSessionSkeleton } from '@/components/modules/homepage/HomeSectionSkeletons';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 
 export const dynamic = 'force-dynamic';
 
 const NavbarWithSession = async () => {
-  const { data } = await userService.getSession();
-  const userInfo = data?.user ?? null;
+  const userInfo = await getSessionUser();
 
   return <Navbar user={userInfo} />;
 };

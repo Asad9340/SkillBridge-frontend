@@ -24,6 +24,16 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { loginAction } from '@/app/(CommonLayout)/login/_action';
 
+const demoCredentials = [
+  { role: 'Super Admin', email: 'superadmin@gmail.com' },
+  { role: 'Admin', email: 'admin@gmail.com' },
+  { role: 'Student', email: 'student@gmail.com' },
+  { role: 'Tutor', email: 'tutor@gmail.com' },
+  { role: 'Manager', email: 'manager@gmail.com' },
+];
+
+const demoPassword = 'asad.emran';
+
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const searchParams = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -174,6 +184,24 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             {serverError}
           </div>
         )}
+
+        <div className="mt-4 rounded-md border bg-muted/30 p-3 text-xs">
+          <p className="mb-2 font-semibold text-foreground">
+            Demo Login Credentials
+          </p>
+          <ul className="space-y-1.5 text-muted-foreground">
+            {demoCredentials.map(cred => (
+              <li
+                key={cred.role}
+                className="flex flex-wrap items-center justify-between gap-2"
+              >
+                <span className="font-medium text-foreground">{cred.role}</span>
+                <span>Email: {cred.email}</span>
+              </li>
+            ))}
+            <li className="pt-1 text-foreground">Password: {demoPassword}</li>
+          </ul>
+        </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">
         <Button

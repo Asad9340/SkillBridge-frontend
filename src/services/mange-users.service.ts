@@ -1,19 +1,15 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 export const manageUserService = {
   getAllUsersByAdmin: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/manage-users`, {
-        headers: {
-          cookie: cookieStore.toString(),
-        },
+        headers: { cookie },
         cache: 'no-store',
-        next: {
-          tags: ['manage-users'],
-        },
+        next: { tags: ['manage-users'] },
       });
       const userData = await res.json();
       if (userData.success) {
@@ -29,13 +25,10 @@ export const manageUserService = {
 
   updateUserStatusByAdmin: async (userId: string, status: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${env.API_URL}/manage-users/${userId}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          cookie: cookieStore.toString(),
-        },
+        headers: { 'Content-Type': 'application/json', cookie },
         body: JSON.stringify({ status }),
         cache: 'no-store',
       });
@@ -51,13 +44,10 @@ export const manageUserService = {
 
   updateUserRoleByAdmin: async (userId: string, role: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${env.API_URL}/manage-users/${userId}/role`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          cookie: cookieStore.toString(),
-        },
+        headers: { 'Content-Type': 'application/json', cookie },
         body: JSON.stringify({ role }),
         cache: 'no-store',
       });
@@ -76,13 +66,10 @@ export const manageUserService = {
     data: { name: string; phone: string; bio: string; image?: string },
   ) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${env.API_URL}/student-profile/${userId}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          cookie: cookieStore.toString(),
-        },
+        headers: { 'Content-Type': 'application/json', cookie },
         body: JSON.stringify(data),
         cache: 'no-store',
       });
@@ -98,32 +85,24 @@ export const manageUserService = {
 
   uploadUserAvatar: async (userId: string, formData: FormData) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(
         `${env.API_URL}/student-profile/${userId}/avatar`,
         {
           method: 'POST',
-          headers: {
-            cookie: cookieStore.toString(),
-          },
+          headers: { cookie },
           body: formData,
           cache: 'no-store',
         },
       );
-
       const data = await res.json();
-
       if (!res.ok) {
         return {
           success: false,
           message: data?.message || 'Failed to upload profile image',
         };
       }
-
-      return {
-        success: true,
-        image: data?.data?.image as string | undefined,
-      };
+      return { success: true, image: data?.data?.image as string | undefined };
     } catch {
       return { success: false, message: 'Something went wrong' };
     }

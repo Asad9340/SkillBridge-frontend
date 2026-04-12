@@ -4,7 +4,7 @@ import { User } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-const SuperAdminUpdateProfilePage = async () => {
+const OrganizerUpdateProfilePage = async () => {
   const userInfo = (await getSessionUser()) as User | null;
 
   if (!userInfo) {
@@ -18,4 +18,4 @@ const SuperAdminUpdateProfilePage = async () => {
   return <UpdateUserProfileForm user={userInfo} />;
 };
 
-export default SuperAdminUpdateProfilePage;
+export default OrganizerUpdateProfilePage;

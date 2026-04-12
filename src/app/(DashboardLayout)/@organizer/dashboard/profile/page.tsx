@@ -1,10 +1,10 @@
-import UpdateUserProfileForm from '@/components/modules/UpdateUserProfileForm/UpdateUserProfileForm';
+import { UserProfileView } from '@/components/modules/profile/UserProfileView';
 import { getSessionUser } from '@/lib/getSessionUser';
 import { User } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
-const SuperAdminUpdateProfilePage = async () => {
+const OrganizerProfilePage = async () => {
   const userInfo = (await getSessionUser()) as User | null;
 
   if (!userInfo) {
@@ -15,7 +15,7 @@ const SuperAdminUpdateProfilePage = async () => {
     );
   }
 
-  return <UpdateUserProfileForm user={userInfo} />;
+  return <UserProfileView user={userInfo} />;
 };
 
-export default SuperAdminUpdateProfilePage;
+export default OrganizerProfilePage;

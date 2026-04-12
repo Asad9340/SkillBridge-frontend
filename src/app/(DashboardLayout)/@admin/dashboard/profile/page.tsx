@@ -1,12 +1,11 @@
 import { UserProfileView } from '@/components/modules/profile/UserProfileView';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 import { User } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 const AdminProfilePage = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData?.user as User | undefined;
+  const userInfo = (await getSessionUser()) as User | null;
 
   if (!userInfo) {
     return (

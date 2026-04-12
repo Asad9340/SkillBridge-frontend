@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { GetAllRatingPublic } from '@/actions/reviews.action';
+import { getAllCategories } from '@/actions/manage-categories.action';
 import Carousel from '@/components/modules/homepage/Carousel';
 import FeaturedTutors from '@/components/modules/homepage/FeaturedTutors';
 import {
@@ -28,6 +29,52 @@ const ReviewsSection = async () => {
   return <ReviewsCarousel reviews={reviews || []} />;
 };
 
+const StatsSection = async () => {
+  // Use public endpoints only (no auth required)
+  const [tutorsRes, reviewsRes, categoriesRes] = await Promise.allSettled([
+    tutorService.getAllTutors({ page: '1', limit: '1' }),
+    GetAllRatingPublic(),
+    getAllCategories(),
+  ]);
+
+  const totalTutors =
+    tutorsRes.status === 'fulfilled'
+      ? (tutorsRes.value.data?.data?.meta?.total ?? 0)
+      : 0;
+
+  const totalReviews =
+    reviewsRes.status === 'fulfilled'
+      ? (reviewsRes.value.data?.length ?? 0)
+      : 0;
+
+  const categories: string[] =
+    categoriesRes.status === 'fulfilled'
+      ? ((categoriesRes.value.data ?? []) as { name: string }[]).map(
+          (c: { name: string }) => c.name,
+        )
+      : [];
+
+  const liveStats = [
+    {
+      label: 'Active Tutors',
+      value: totalTutors > 0 ? `${totalTutors}+` : '100+',
+    },
+    {
+      label: 'Subjects Covered',
+      value: '85+',
+    },
+    {
+      label: 'Student Reviews',
+      value: totalReviews > 0 ? `${totalReviews}+` : '500+',
+    },
+    { label: 'Average Rating', value: '4.9/5' },
+  ];
+
+  return (
+    <LandingExtraSections liveStats={liveStats} liveCategories={categories} />
+  );
+};
+
 const HomePage = () => {
   return (
     <div>
@@ -40,7 +87,9 @@ const HomePage = () => {
       <Suspense fallback={<ReviewsSkeleton />}>
         <ReviewsSection />
       </Suspense>
-      <LandingExtraSections />
+      <Suspense fallback={null}>
+        <StatsSection />
+      </Suspense>
     </div>
   );
 };

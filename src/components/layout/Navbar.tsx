@@ -26,6 +26,7 @@ import {
 import Link from 'next/link';
 import { ThemeToggle } from '../ui/theme-toggler';
 import { logoutAction } from '@/actions/auth.action';
+import SkillBridgeLogo from '../ui/SkillBridgeLogo';
 
 export interface UserType {
   name: string;
@@ -123,9 +124,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
       <div className="container flex h-16 items-center">
         {/* Desktop */}
         <div className="hidden w-full flex-1 items-center justify-between lg:flex">
-          <Link href="/" className="text-2xl font-bold tracking-tight">
-            SkillBridge
-          </Link>
+          <SkillBridgeLogo textSize="lg" />
 
           <NavigationMenu className="flex">
             <NavigationMenuList>{menu.map(renderMenuItem)}</NavigationMenuList>
@@ -227,9 +226,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
 
         {/* Mobile */}
         <div className="flex w-full flex-1 items-center lg:hidden">
-          <Link href="/" className="mr-4 text-xl font-bold tracking-tight">
-            SkillBridge
-          </Link>
+          <SkillBridgeLogo textSize="md" className="mr-4" />
 
           <div className="flex flex-1 items-center justify-end space-x-2">
             <ThemeToggle />

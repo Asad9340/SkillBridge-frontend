@@ -109,7 +109,16 @@ const faqs = [
   },
 ];
 
-const LandingExtraSections = () => {
+const LandingExtraSections = ({
+  liveStats,
+  liveCategories,
+}: {
+  liveStats?: { label: string; value: string }[];
+  liveCategories?: string[];
+}) => {
+  const displayStats = liveStats && liveStats.length > 0 ? liveStats : stats;
+  const displayCategories =
+    liveCategories && liveCategories.length > 0 ? liveCategories : categories;
   return (
     <>
       <section className="px-6 py-16">
@@ -120,7 +129,7 @@ const LandingExtraSections = () => {
             professionals.
           </p>
           <div className="flex flex-wrap gap-3">
-            {categories.map(category => (
+            {displayCategories.map(category => (
               <Badge
                 key={category}
                 variant="secondary"
@@ -206,7 +215,7 @@ const LandingExtraSections = () => {
             Real momentum from a growing learning community.
           </p>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map(stat => (
+            {displayStats.map(stat => (
               <article
                 key={stat.label}
                 className="rounded-xl border p-6 text-center"

@@ -4,15 +4,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, BookOpen } from 'lucide-react';
 import { tutorService } from '@/services/tutor.service';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 import ConfirmCancelButton from '@/components/modules/booking/ConfirmCompleteButton';
 
 export const dynamic = 'force-dynamic';
 
 const ManageSessionPage = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData.user;
-  const { data: tutorData } = await tutorService.getTutorProfile(userInfo.id);
+  const sessionUser = await getSessionUser();
+
+  if (!sessionUser?.id) {
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        No session found.
+      </div>
+    );
+  }
+
+  const { data: tutorData } = await tutorService.ensureTutorProfile(
+    sessionUser.id,
+  );
+  if (!tutorData?.id) {
+    return (
+      <div className="py-10 text-center text-muted-foreground">
+        Unable to load tutor profile. Please try again.
+      </div>
+    );
+  }
   const { data: bookings } = await getBookingByTutorId(tutorData.id);
 
   if (!bookings?.length) {

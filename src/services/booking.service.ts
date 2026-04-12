@@ -1,15 +1,15 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const bookingSessionService = {
   getBookingByStudentId: async () => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/booking-session`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['all-booking'] },
       });
@@ -24,11 +24,11 @@ export const bookingSessionService = {
       return { data: null, error };
     }
   },
-  getBookingByTutorId: async (tutorId:string) => {
+  getBookingByTutorId: async (tutorId: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/booking-session/${tutorId}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['all-tutor-booking'] },
       });
@@ -45,9 +45,9 @@ export const bookingSessionService = {
   },
   getTutorProfile: async (userId: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/tutors-profile/${userId}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['tutor-profile'] },
       });
@@ -65,12 +65,12 @@ export const bookingSessionService = {
   },
 
   updateBookingById: async (bookingId: string, payload: { status: string }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/booking-session/${bookingId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });
@@ -84,12 +84,12 @@ export const bookingSessionService = {
     subjectId: string;
     tutorId: string;
   }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/booking-session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });

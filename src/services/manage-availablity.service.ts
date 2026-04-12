@@ -1,15 +1,15 @@
-import { cookies } from 'next/headers';
 import { env } from '../../env';
 import { updateTag } from 'next/cache';
+import { getCookieString } from '@/lib/cookieString';
 
 const API_URL = env.API_URL;
 
 export const manageAvailabilityService = {
   getAllAvailability: async (id: string) => {
     try {
-      const cookieStore = await cookies();
+      const cookie = await getCookieString();
       const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
-        headers: { cookie: cookieStore.toString() },
+        headers: { cookie },
         cache: 'no-store',
         next: { tags: ['tutor-availability'] },
       });
@@ -28,12 +28,12 @@ export const manageAvailabilityService = {
     endTime: string;
     tutorId: string;
   }) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/tutors-availability`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });
@@ -51,12 +51,12 @@ export const manageAvailabilityService = {
       tutorId: string;
     },
   ) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        cookie: cookieStore.toString(),
+        cookie,
       },
       body: JSON.stringify(payload),
     });
@@ -65,10 +65,10 @@ export const manageAvailabilityService = {
     return { success: true };
   },
   deleteAvailability: async (id: string) => {
-    const cookieStore = await cookies();
+    const cookie = await getCookieString();
     const res = await fetch(`${API_URL}/tutors-availability/${id}`, {
       method: 'DELETE',
-      headers: { cookie: cookieStore.toString() },
+      headers: { cookie },
     });
     if (!res.ok) return { success: false };
     updateTag('tutor-availability');

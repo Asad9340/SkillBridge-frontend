@@ -1,12 +1,11 @@
 import JoinAsTutor from '@/components/modules/JoinAsTutor/JoinAsTutor';
-import { userService } from '@/services/user.service';
+import { getSessionUser } from '@/lib/getSessionUser';
 import { User } from '@/types';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 const JoinAsTutorPage = async () => {
-  const { data: sessionData } = await userService.getSession();
-  const userInfo = sessionData?.user as User;
+  const userInfo = (await getSessionUser()) as User | null;
 
   if (!userInfo) {
     redirect('/login?redirect=/join-as-tutor');
