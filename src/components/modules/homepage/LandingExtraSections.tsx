@@ -72,13 +72,6 @@ const offers = [
   },
 ];
 
-const stats = [
-  { label: 'Active Tutors', value: '1,200+' },
-  { label: 'Subjects Covered', value: '85+' },
-  { label: 'Sessions Booked', value: '50,000+' },
-  { label: 'Average Rating', value: '4.9/5' },
-];
-
 const blogs = [
   {
     title: 'How To Choose The Right Tutor In 10 Minutes',
@@ -113,10 +106,10 @@ const LandingExtraSections = ({
   liveStats,
   liveCategories,
 }: {
-  liveStats?: { label: string; value: string }[];
+  liveStats: { label: string; value: string }[];
   liveCategories?: string[];
 }) => {
-  const displayStats = liveStats && liveStats.length > 0 ? liveStats : stats;
+  const displayStats = liveStats;
   const displayCategories =
     liveCategories && liveCategories.length > 0 ? liveCategories : categories;
   return (

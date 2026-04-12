@@ -32,7 +32,7 @@ const ReviewsSection = async () => {
 const StatsSection = async () => {
   // Use public endpoints only (no auth required)
   const [tutorsRes, reviewsRes, categoriesRes] = await Promise.allSettled([
-    tutorService.getAllTutors({ page: '1', limit: '1' }),
+    tutorService.getAllTutors({ page: '1', limit: '100' }),
     GetAllRatingPublic(),
     getAllCategories(),
   ]);
@@ -42,10 +42,29 @@ const StatsSection = async () => {
       ? (tutorsRes.value.data?.data?.meta?.total ?? 0)
       : 0;
 
-  const totalReviews =
+  const tutorsData: Array<{ subjects?: string[] }> =
+    tutorsRes.status === 'fulfilled'
+      ? ((tutorsRes.value.data?.data?.data ?? []) as Array<{
+          subjects?: string[];
+        }>)
+      : [];
+
+  const reviewsData: Array<{ rating?: number }> =
     reviewsRes.status === 'fulfilled'
-      ? (reviewsRes.value.data?.length ?? 0)
+      ? ((reviewsRes.value.data ?? []) as Array<{ rating?: number }>)
+      : [];
+
+  const totalReviews = reviewsData.length;
+
+  const averageRating =
+    totalReviews > 0
+      ? reviewsData.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) /
+        totalReviews
       : 0;
+
+  const uniqueSubjects = new Set(
+    tutorsData.flatMap(tutor => tutor.subjects ?? []),
+  ).size;
 
   const categories: string[] =
     categoriesRes.status === 'fulfilled'
@@ -57,17 +76,20 @@ const StatsSection = async () => {
   const liveStats = [
     {
       label: 'Active Tutors',
-      value: totalTutors > 0 ? `${totalTutors}+` : '100+',
+      value: totalTutors.toString(),
     },
     {
       label: 'Subjects Covered',
-      value: '85+',
+      value: uniqueSubjects.toString(),
     },
     {
       label: 'Student Reviews',
-      value: totalReviews > 0 ? `${totalReviews}+` : '500+',
+      value: totalReviews.toString(),
     },
-    { label: 'Average Rating', value: '4.9/5' },
+    {
+      label: 'Average Rating',
+      value: totalReviews > 0 ? `${averageRating.toFixed(1)}/5` : '0.0/5',
+    },
   ];
 
   return (

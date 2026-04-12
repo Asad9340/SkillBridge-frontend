@@ -89,6 +89,14 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     window.location.href = `${baseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
   };
 
+  const handleDemoFill = (email: string) => {
+    form.setFieldValue('email', email);
+    form.setFieldValue('password', demoPassword);
+    form.setFieldMeta('email', prev => ({ ...prev, isTouched: true }));
+    form.setFieldMeta('password', prev => ({ ...prev, isTouched: true }));
+    setServerError(null);
+  };
+
   return (
     <Card {...props}>
       <CardHeader>
@@ -189,18 +197,27 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
           <p className="mb-2 font-semibold text-foreground">
             Demo Login Credentials
           </p>
-          <ul className="space-y-1.5 text-muted-foreground">
+          <div className="mb-2 flex flex-wrap gap-2">
             {demoCredentials.map(cred => (
-              <li
+              <Button
                 key={cred.role}
-                className="flex flex-wrap items-center justify-between gap-2"
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-[11px]"
+                onClick={() => handleDemoFill(cred.email)}
+                disabled={isLoading}
               >
-                <span className="font-medium text-foreground">{cred.role}</span>
-                <span>Email: {cred.email}</span>
-              </li>
+                {cred.role} Login
+              </Button>
             ))}
-            <li className="pt-1 text-foreground">Password: {demoPassword}</li>
-          </ul>
+          </div>
+          <p className="text-muted-foreground">
+            Click a role button to auto-fill email and password.
+          </p>
+          <p className="pt-1 text-foreground">
+            Password for all roles: {demoPassword}
+          </p>
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-3">

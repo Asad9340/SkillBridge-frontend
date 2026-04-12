@@ -79,12 +79,12 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <DashboardSidebar user={userInfo} />
 
-      <SidebarInset>
-        <header className="flex h-12 shrink-0 items-center gap-2 border-b px-4 md:hidden">
+      <SidebarInset className="min-w-0 overflow-x-hidden">
+        <header className="sticky top-0 z-20 flex h-12 shrink-0 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur md:hidden">
           <SidebarTrigger className="-ml-1" />
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-4 p-3 sm:p-4 md:p-6 min-w-0">
           {userInfo?.role === ROLES.SUPER_ADMIN
             ? superAdmin
             : userInfo?.role === ROLES.MANAGER
