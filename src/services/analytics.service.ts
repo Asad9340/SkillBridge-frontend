@@ -61,4 +61,25 @@ export const AnalyticsService = {
       return { data: null, error };
     }
   },
+  getAdminAIInsights: async () => {
+    try {
+      const cookie = await getCookieString();
+      const res = await fetch(`${API_URL}/analytics/admin/ai-insights`, {
+        headers: { cookie },
+        cache: 'no-store',
+        next: { tags: ['analytics-admin-ai'] },
+      });
+
+      if (!res.ok) {
+        return { data: null, error: 'Failed to fetch AI admin insights' };
+      }
+
+      const json = await res.json();
+      return json.success === true
+        ? { data: json.data, error: null }
+        : { data: null, error: json.message };
+    } catch (error) {
+      return { data: null, error };
+    }
+  },
 };

@@ -1,14 +1,19 @@
-import { getAdminAnalytics } from '@/actions/analytics.action';
+import {
+  getAdminAIInsights,
+  getAdminAnalytics,
+} from '@/actions/analytics.action';
 import { getAllUsersByAdmin } from '@/actions/manage-users.action';
 import { AdvancedDashboardHome } from '@/components/modules/dashboard/AdvancedDashboardHome';
 
 export const dynamic = 'force-dynamic';
 
 const AdminDashboard = async () => {
-  const [{ data: analytics }, { data: usersData }] = await Promise.all([
-    getAdminAnalytics(),
-    getAllUsersByAdmin(),
-  ]);
+  const [{ data: analytics }, { data: usersData }, { data: aiInsightsData }] =
+    await Promise.all([
+      getAdminAnalytics(),
+      getAllUsersByAdmin(),
+      getAdminAIInsights(),
+    ]);
 
   const users = Array.isArray(usersData)
     ? (usersData as Array<{
@@ -26,6 +31,7 @@ const AdminDashboard = async () => {
       title="Admin Dashboard"
       analytics={analytics}
       users={users}
+      aiInsights={aiInsightsData}
     />
   );
 };

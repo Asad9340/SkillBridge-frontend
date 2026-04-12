@@ -1,6 +1,16 @@
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+const isProduction = process.env.NODE_ENV === 'production';
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+const DEFAULT_BACKEND_URL = isProduction
+  ? 'https://skill-bridge-backend-nine.vercel.app'
+  : 'http://localhost:5000';
+
+const DEFAULT_FRONTEND_URL = isProduction
+  ? 'https://skill-bridge-sooty-five.vercel.app'
+  : 'http://localhost:3000';
+
+const BACKEND_URL = process.env.BACKEND_URL || DEFAULT_BACKEND_URL;
+
+const FRONTEND_URL = process.env.FRONTEND_URL || DEFAULT_FRONTEND_URL;
 
 const API_URL =
   process.env.API_URL ||

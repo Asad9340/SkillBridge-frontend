@@ -9,3 +9,6 @@ export const getStudentAnalytics = async () =>
   AnalyticsService.getStudentAnalytics();
 export const getAdminAnalytics = async () =>
   AnalyticsService.getAdminAnalytics();
+
+export const getAdminAIInsights = async () =>
+  AnalyticsService.getAdminAIInsights();

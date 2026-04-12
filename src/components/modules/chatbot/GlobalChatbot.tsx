@@ -14,7 +14,10 @@ type TChatMessage = {
 };
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api/v1';
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === 'production'
+    ? 'https://skill-bridge-backend-nine.vercel.app/api/v1'
+    : 'http://localhost:5000/api/v1');
 
 const suggestions = [
   'How can I choose the right tutor?',
@@ -140,6 +143,108 @@ export default function GlobalChatbot() {
     }
   };
 
+  const pushAssistantMessage = (content: string) => {
+    setMessages(prev => [
+      ...prev,
+      {
+        id: createId(),
+        role: 'assistant',
+        content,
+      },
+    ]);
+    window.setTimeout(scrollToBottom, 0);
+  };
+
+  const callAiTool = async (
+    endpoint: string,
+    body: Record<string, unknown>,
+  ) => {
+    setIsSending(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      });
+
+      const payload = await response.json();
+      const reply = getReplyText(payload);
+
+      pushAssistantMessage(
+        reply ||
+          'Tool finished but returned empty output. Please try again with more details.',
+      );
+    } catch {
+      pushAssistantMessage(
+        'AI tool failed right now. Please try again in a moment.',
+      );
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleGenerateStudyPlan = async () => {
+    if (isSending) return;
+
+    const topic = window.prompt('Study topic?', 'JavaScript fundamentals');
+    if (!topic?.trim()) return;
+
+    const level = window.prompt('Current level?', 'beginner') || 'beginner';
+    const goal =
+      window.prompt('Your goal?', 'Get ready for interviews in 2 weeks') ||
+      'Build consistent progress';
+
+    setMessages(prev => [
+      ...prev,
+      {
+        id: createId(),
+        role: 'user',
+        content: `Generate study plan for ${topic}`,
+      },
+    ]);
+
+    await callAiTool('/chatbot/study-plan', {
+      topic,
+      level,
+      days: 14,
+      dailyMinutes: 60,
+      goal,
+    });
+  };
+
+  const handleTutorProfileFeedback = async () => {
+    if (isSending) return;
+
+    const bio = window.prompt('Paste your tutor bio');
+    if (!bio?.trim()) return;
+
+    const subjects =
+      window.prompt('Subjects you teach?', 'JavaScript, React') ||
+      'Not specified';
+    const experience =
+      window.prompt('Experience summary?', '1 year of tutoring') ||
+      'Not specified';
+
+    setMessages(prev => [
+      ...prev,
+      {
+        id: createId(),
+        role: 'user',
+        content: 'Improve my tutor profile bio',
+      },
+    ]);
+
+    await callAiTool('/chatbot/profile-feedback', {
+      bio,
+      subjects,
+      experience,
+      style: 'Friendly and practical',
+    });
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -161,7 +266,7 @@ export default function GlobalChatbot() {
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 sm:bottom-5 sm:left-auto sm:right-5">
       {isOpen ? (
-        <section className="flex h-[75vh] w-full flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:h-[560px] sm:w-[380px]">
+        <section className="flex h-[75vh] w-full flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl sm:h-140 sm:w-95">
           <header className="flex items-center justify-between border-b border-border bg-primary px-4 py-3 text-primary-foreground">
             <div className="flex items-center gap-2">
               <Bot className="h-4 w-4" />
@@ -228,6 +333,27 @@ export default function GlobalChatbot() {
                   {suggestion}
                 </button>
               ))}
+            </div>
+
+            <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isSending}
+                onClick={() => void handleGenerateStudyPlan()}
+              >
+                AI Study Plan
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isSending}
+                onClick={() => void handleTutorProfileFeedback()}
+              >
+                AI Tutor Bio Improve
+              </Button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-2">

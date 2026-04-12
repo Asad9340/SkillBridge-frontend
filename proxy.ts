@@ -5,10 +5,15 @@ import {
   getDefaultDashboardRoute,
 } from './src/lib/authUtils';
 
+const defaultBackendUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://skill-bridge-backend-nine.vercel.app'
+    : 'http://localhost:5000';
+
 const API_URL =
   process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  `${process.env.BACKEND_URL || 'http://localhost:5000'}/api/v1`;
+  `${process.env.BACKEND_URL || defaultBackendUrl}/api/v1`;
 
 /**
  * Exchange a BetterAuth session token for custom JWT access + refresh tokens.

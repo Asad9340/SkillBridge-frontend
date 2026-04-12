@@ -12,6 +12,19 @@ type DashboardAnalytics = {
   bookingSummary?: BookingSummary;
   totalTutors?: number;
   totalStudents?: number;
+  totalUsers?: number;
+  roleSummary?: {
+    totalAdmins?: number;
+    totalManagers?: number;
+    totalOrganizers?: number;
+    totalSuperAdmins?: number;
+  };
+};
+
+type AdminAIInsights = {
+  anomalyFlags?: string[];
+  aiInsights?: string;
+  trendSeries?: Array<{ date: string; count: number }>;
 };
 
 type DashboardUser = {
@@ -88,10 +101,12 @@ export const AdvancedDashboardHome = ({
   title,
   analytics,
   users,
+  aiInsights,
 }: {
   title: string;
   analytics: DashboardAnalytics | null | undefined;
   users: DashboardUser[];
+  aiInsights?: AdminAIInsights | null;
 }) => {
   const booking = analytics?.bookingSummary;
   const bookingData = [
@@ -165,11 +180,18 @@ export const AdvancedDashboardHome = ({
     .slice(0, 8);
 
   const overview = [
-    { label: 'Total Users', value: users.length },
+    {
+      label: 'Total Users',
+      value: toCount(analytics?.totalUsers) || users.length,
+    },
     { label: 'Total Tutors', value: toCount(analytics?.totalTutors) },
     { label: 'Total Students', value: toCount(analytics?.totalStudents) },
     { label: 'Total Bookings', value: toCount(booking?.totalBookings) },
   ];
+
+  const aiMarkdown =
+    aiInsights?.aiInsights?.trim() || 'AI insights are currently unavailable.';
+  const aiLines = aiMarkdown.split('\n').filter(line => line.trim().length > 0);
 
   return (
     <div className="container mx-auto py-8 space-y-8">
@@ -341,6 +363,31 @@ export const AdvancedDashboardHome = ({
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>AI Anomaly Insights & Suggested Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {aiInsights?.anomalyFlags?.length ? (
+            <div className="space-y-1">
+              {aiInsights.anomalyFlags.map(flag => (
+                <p key={flag} className="text-sm text-foreground">
+                  - {flag}
+                </p>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="rounded-md border bg-muted/30 p-3">
+            {aiLines.map((line, index) => (
+              <p key={`${index}-${line}`} className="text-sm leading-6">
+                {line}
+              </p>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

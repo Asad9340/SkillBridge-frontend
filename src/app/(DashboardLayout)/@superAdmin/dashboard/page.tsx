@@ -1,13 +1,21 @@
-import { getAdminAnalytics } from '@/actions/analytics.action';
+import {
+  getAdminAIInsights,
+  getAdminAnalytics,
+} from '@/actions/analytics.action';
 import { getAllUsersByAdmin } from '@/actions/manage-users.action';
 import { AdvancedDashboardHome } from '@/components/modules/dashboard/AdvancedDashboardHome';
 
 export const dynamic = 'force-dynamic';
 
 const SuperAdminDashboardPage = async () => {
-  const [{ data: analyticsData }, { data: usersData }] = await Promise.all([
+  const [
+    { data: analyticsData },
+    { data: usersData },
+    { data: aiInsightsData },
+  ] = await Promise.all([
     getAdminAnalytics(),
     getAllUsersByAdmin(),
+    getAdminAIInsights(),
   ]);
   const users = Array.isArray(usersData)
     ? (usersData as Array<{
@@ -25,6 +33,7 @@ const SuperAdminDashboardPage = async () => {
       title="Super Admin Dashboard"
       analytics={analyticsData}
       users={users}
+      aiInsights={aiInsightsData}
     />
   );
 };
