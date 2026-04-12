@@ -1,8 +1,8 @@
 ﻿# SkillBridge Frontend
 
-SkillBridge frontend application built with Next.js App Router.
-It provides the user-facing experience for authentication, role-based dashboards,
-course and tutor workflows, booking flows, and review interactions.
+SkillBridge frontend application built with Next.js App Router. It provides the
+user-facing experience for authentication, role-based dashboards, course and
+tutor workflows, booking flows, and review interactions.
 
 ## Tech Stack
 
@@ -43,15 +43,15 @@ src/
 
 Create a `.env.local` file in the project root.
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `BACKEND_URL` | No | Backend base URL (default: `http://localhost:5000` in development). |
-| `FRONTEND_URL` | No | Frontend base URL (default: `http://localhost:3000` in development). |
-| `API_URL` | No | Full API base URL override (example: `http://localhost:5000/api/v1`). |
-| `AUTH_URL` | No | Auth endpoint base override (example: `http://localhost:5000/api/auth`). |
-| `NEXT_PUBLIC_API_BASE_URL` | No | Public API base used in client-side requests. |
-| `NEXT_PUBLIC_AUTH_BASE_URL` | No | Public Better Auth endpoint base URL. |
-| `NEXT_PUBLIC_FRONTEND_URL` | No | Public frontend URL for callback and redirect flows. |
+| Variable                    | Required | Purpose                                                                  |
+| --------------------------- | -------- | ------------------------------------------------------------------------ |
+| `BACKEND_URL`               | No       | Backend base URL (default: `http://localhost:5000` in development).      |
+| `FRONTEND_URL`              | No       | Frontend base URL (default: `http://localhost:3000` in development).     |
+| `API_URL`                   | No       | Full API base URL override (example: `http://localhost:5000/api/v1`).    |
+| `AUTH_URL`                  | No       | Auth endpoint base override (example: `http://localhost:5000/api/auth`). |
+| `NEXT_PUBLIC_API_BASE_URL`  | No       | Public API base used in client-side requests.                            |
+| `NEXT_PUBLIC_AUTH_BASE_URL` | No       | Public Better Auth endpoint base URL.                                    |
+| `NEXT_PUBLIC_FRONTEND_URL`  | No       | Public frontend URL for callback and redirect flows.                     |
 
 ### Example `.env.local`
 
