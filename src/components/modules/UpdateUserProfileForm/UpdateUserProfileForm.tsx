@@ -90,9 +90,8 @@ const UpdateUserProfileForm = ({ user }: { user: User }) => {
         }
 
         toast.success('Profile updated successfully!', { id: toastId });
-        // Redirect to profile page after success
-        router.push('/dashboard/profile');
         router.refresh();
+        router.replace('/dashboard/profile');
       } catch (error) {
         console.error('Update profile error:', error);
         toast.error('Something went wrong. Please try again.', { id: toastId });

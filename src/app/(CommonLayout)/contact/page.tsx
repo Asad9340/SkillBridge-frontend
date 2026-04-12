@@ -8,7 +8,7 @@ import {
   MessageSquare,
   MailOpen,
   Clock,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
 
 const Contact = () => {
@@ -47,10 +47,17 @@ const Contact = () => {
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Mail className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-bold text-xl mb-3 text-foreground">Email Us</h3>
-              <p className="text-sm text-muted-foreground mb-4">Fastest response time</p>
-              <a href="mailto:hello@skillbridge.com" className="font-semibold text-primary hover:text-primary/80 transition-colors">
-                hello@skillbridge.com
+              <h3 className="font-bold text-xl mb-3 text-foreground">
+                Email Us
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Fastest response time
+              </p>
+              <a
+                href="mailto:asadulimran1999@gmail.com"
+                className="font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                asadulimran1999@gmail.com
               </a>
             </div>
 
@@ -59,10 +66,17 @@ const Contact = () => {
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Phone className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-bold text-xl mb-3 text-foreground">Call Us</h3>
-              <p className="text-sm text-muted-foreground mb-4">Mon-Fri 9AM-6PM</p>
-              <a href="tel:+15551234567" className="font-semibold text-primary hover:text-primary/80 transition-colors">
-                +1 (555) 123-4567
+              <h3 className="font-bold text-xl mb-3 text-foreground">
+                Call Us
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Mon-Fri 9AM-6PM
+              </p>
+              <a
+                href="tel:+8801710101984"
+                className="font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                01710101984
               </a>
             </div>
 
@@ -71,10 +85,15 @@ const Contact = () => {
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <MapPin className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-bold text-xl mb-3 text-foreground">Visit Us</h3>
-              <p className="text-sm text-muted-foreground mb-4">Learning Street HQ</p>
+              <h3 className="font-bold text-xl mb-3 text-foreground">
+                Visit Us
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Learning Street HQ
+              </p>
               <div className="font-semibold text-foreground text-sm leading-tight">
-                123 Learning St<br/>
+                123 Learning St
+                <br />
                 Education City, EDU 12345
               </div>
             </div>
@@ -96,7 +115,10 @@ const Contact = () => {
                 Send us a message
               </h2>
               <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
-                <p>Have questions about our platform, tutor opportunities, or need help getting started?</p>
+                <p>
+                  Have questions about our platform, tutor opportunities, or
+                  need help getting started?
+                </p>
                 <p>Our team responds to all inquiries within 24 hours.</p>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
@@ -114,7 +136,9 @@ const Contact = () => {
             {/* Right - Form */}
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Full Name</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Full Name
+                </label>
                 <div className="relative">
                   <User className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
@@ -126,7 +150,9 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Email</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Email
+                </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                   <input
@@ -138,7 +164,9 @@ const Contact = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Message</label>
+                <label className="text-sm font-semibold text-foreground">
+                  Message
+                </label>
                 <div className="relative">
                   <MessageSquare className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
                   <textarea
@@ -162,7 +190,9 @@ const Contact = () => {
       <section className="py-12 px-6 border-t border-border">
         <div className="container mx-auto text-center">
           <div className="max-w-md mx-auto space-y-4">
-            <h3 className="text-xl font-bold text-foreground">Need help immediately?</h3>
+            <h3 className="text-xl font-bold text-foreground">
+              Need help immediately?
+            </h3>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
               <Link
                 href="/tutors"

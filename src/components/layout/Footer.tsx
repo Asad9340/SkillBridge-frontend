@@ -23,19 +23,25 @@ const Footer = () => {
             </p>
             <div className="flex gap-2">
               <a
-                href="#"
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noreferrer"
                 className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://x.com/"
+                target="_blank"
+                rel="noreferrer"
                 className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/"
+                target="_blank"
+                rel="noreferrer"
                 className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-200"
               >
                 <Instagram className="w-5 h-5" />
@@ -107,7 +113,7 @@ const Footer = () => {
             </h4>
             <div className="space-y-3 text-sm">
               <Link
-                href="/tutor/register"
+                href="/join-as-tutor"
                 className="block text-muted-foreground hover:text-foreground transition-colors group"
               >
                 <span className="group-hover:-translate-x-1 transition-transform duration-200">
@@ -115,7 +121,7 @@ const Footer = () => {
                 </span>
               </Link>
               <Link
-                href="/tutor/dashboard"
+                href="/dashboard"
                 className="block text-muted-foreground hover:text-foreground transition-colors group"
               >
                 <span className="group-hover:-translate-x-1 transition-transform duration-200">
@@ -123,7 +129,7 @@ const Footer = () => {
                 </span>
               </Link>
               <Link
-                href="/tutor/schedule"
+                href="/dashboard/manage-availability"
                 className="block text-muted-foreground hover:text-foreground transition-colors group"
               >
                 <span className="group-hover:-translate-x-1 transition-transform duration-200">
@@ -131,11 +137,11 @@ const Footer = () => {
                 </span>
               </Link>
               <Link
-                href="/tutor/earnings"
+                href="/dashboard/my-bookings"
                 className="block text-muted-foreground hover:text-foreground transition-colors group"
               >
                 <span className="group-hover:-translate-x-1 transition-transform duration-200">
-                  Earnings
+                  My Bookings
                 </span>
               </Link>
             </div>
@@ -146,18 +152,18 @@ const Footer = () => {
             <h4 className="font-semibold text-lg mb-6">Get in touch</h4>
             <div className="space-y-4 text-sm">
               <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                <Mail className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
+                <Mail className="w-5 h-5 mt-0.5 text-primary shrink-0" />
                 <span className="text-muted-foreground">
-                  hello@skillbridge.com
+                  asadulimran1999@gmail.com
                 </span>
               </div>
               <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                <Phone className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground">+1 (555) 123-4567</span>
+                <Phone className="w-5 h-5 mt-0.5 text-primary shrink-0" />
+                <span className="text-muted-foreground">01710101984</span>
               </div>
               <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-                <MapPin className="w-5 h-5 mt-0.5 text-primary flex-shrink-0" />
-                <span className="text-muted-foreground max-w-[200px]">
+                <MapPin className="w-5 h-5 mt-0.5 text-primary shrink-0" />
+                <span className="text-muted-foreground max-w-50">
                   123 Learning Street, Education City, EDU 12345
                 </span>
               </div>

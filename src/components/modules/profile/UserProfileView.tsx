@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { getAvatarUrl } from '@/lib/avatarUtils';
 
 type ProfileUser = {
   name?: string | null;
@@ -20,6 +21,7 @@ type ProfileUser = {
   emailVerified?: boolean;
   phone?: string | null;
   bio?: string | null;
+  updatedAt?: string | Date | null;
 };
 
 const statusVariantMap: Record<
@@ -43,6 +45,8 @@ const getInitials = (name?: string | null) => {
 };
 
 export const UserProfileView = ({ user }: { user: ProfileUser }) => {
+  const avatarSrc = getAvatarUrl(user.image, user.updatedAt);
+
   return (
     <div className="w-full max-w-7xl mx-auto py-6 px-4 space-y-6">
       <Card className="shadow-sm">
@@ -50,7 +54,7 @@ export const UserProfileView = ({ user }: { user: ProfileUser }) => {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Avatar className="h-24 w-24 border">
               <AvatarImage
-                src={user.image || undefined}
+                src={avatarSrc || undefined}
                 alt={user.name || 'User'}
               />
               <AvatarFallback className="text-2xl">

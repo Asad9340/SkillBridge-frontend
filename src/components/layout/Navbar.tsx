@@ -27,6 +27,7 @@ import Link from 'next/link';
 import { ThemeToggle } from '../ui/theme-toggler';
 import { logoutAction } from '@/actions/auth.action';
 import SkillBridgeLogo from '../ui/SkillBridgeLogo';
+import { getAvatarUrl } from '@/lib/avatarUtils';
 
 export interface UserType {
   name: string;
@@ -54,6 +55,16 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
     { title: 'Blog', url: '/blog' },
     { title: 'About', url: '/about' },
     { title: 'Contact', url: '/contact' },
+    { title: 'Support', url: '/support' },
+  ];
+
+  const resourcesMenu = [
+    { title: 'About', url: '/about' },
+    { title: 'Blog', url: '/blog' },
+    { title: 'Contact', url: '/contact' },
+    { title: 'Support', url: '/support' },
+    { title: 'Privacy', url: '/privacy' },
+    { title: 'Terms', url: '/terms' },
   ];
 
   const renderMenuItem = (item: { title: string; url: string }) => (
@@ -80,16 +91,18 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   const renderUserAvatar = (
     userImage: string | null,
     userName: string,
+    userUpdatedAt?: string,
     size = 32,
   ) => {
     if (userImage) {
+      const avatarSrc = getAvatarUrl(userImage, userUpdatedAt);
       return (
         <div
           className="relative shrink-0 overflow-hidden rounded-full"
           style={{ width: size, height: size }}
         >
           <Image
-            src={userImage}
+            src={avatarSrc}
             alt={`${userName}'s profile`}
             fill
             className="object-cover"
@@ -117,7 +130,7 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
   return (
     <header
       className={cn(
-        'border-b bg-background/95 backdrop-blur supports-[backdrop-filter:blur(20px)]',
+        'sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter:blur(20px)]',
         className,
       )}
     >
@@ -127,7 +140,28 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
           <SkillBridgeLogo textSize="lg" />
 
           <NavigationMenu className="flex">
-            <NavigationMenuList>{menu.map(renderMenuItem)}</NavigationMenuList>
+            <NavigationMenuList>
+              {menu.map(renderMenuItem)}
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-10 px-4 py-2 text-sm font-medium"
+                    >
+                      Resources
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {resourcesMenu.map(item => (
+                      <DropdownMenuItem asChild key={item.title}>
+                        <Link href={item.url}>{item.title}</Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
+            </NavigationMenuList>
           </NavigationMenu>
 
           <div className="flex items-center gap-2">
@@ -141,7 +175,12 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                     variant="ghost"
                     className="h-10 w-10 rounded-full hover:bg-accent"
                   >
-                    {renderUserAvatar(user.image, user.name, 36)}
+                    {renderUserAvatar(
+                      user.image,
+                      user.name,
+                      user.updatedAt,
+                      36,
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-80" align="end" forceMount>
@@ -150,7 +189,12 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                   <div className="flex items-center gap-3 p-4 border-b">
                     {' '}
                     {/* Increased padding */}
-                    {renderUserAvatar(user.image, user.name, 48)}
+                    {renderUserAvatar(
+                      user.image,
+                      user.name,
+                      user.updatedAt,
+                      48,
+                    )}
                     <div className="space-y-1 min-w-0">
                       <p className="font-medium text-sm leading-none truncate">
                         {user.name}
@@ -240,14 +284,24 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                     size="icon"
                     className="h-10 w-10 rounded-full"
                   >
-                    {renderUserAvatar(user.image, user.name, 36)}
+                    {renderUserAvatar(
+                      user.image,
+                      user.name,
+                      user.updatedAt,
+                      36,
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-72" align="end">
                   {' '}
                   {/* Wider mobile dropdown */}
                   <div className="flex items-center gap-3 p-3 border-b">
-                    {renderUserAvatar(user.image, user.name, 44)}
+                    {renderUserAvatar(
+                      user.image,
+                      user.name,
+                      user.updatedAt,
+                      44,
+                    )}
                     <div className="space-y-1 min-w-0">
                       <p className="font-medium text-sm leading-none truncate">
                         {user.name}
@@ -317,6 +371,10 @@ const Navbar = ({ user, className }: NavbarProps & { className?: string }) => {
                 <nav className="flex flex-col gap-4 p-4">
                   <div className="flex flex-col space-y-2">
                     {menu.map(renderMobileMenuItem)}
+                    <p className="px-2 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                      Resources
+                    </p>
+                    {resourcesMenu.map(renderMobileMenuItem)}
                   </div>
                   {!isLoggedIn && (
                     <Button asChild>

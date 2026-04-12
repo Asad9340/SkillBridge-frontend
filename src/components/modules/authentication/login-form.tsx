@@ -79,14 +79,22 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   });
 
   const handleGoogleLogin = () => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_AUTH_BASE_URL ||
-      'https://skill-bridge-backend-nine.vercel.app/api/auth';
-    const callbackURL =
-      redirectPath && redirectPath !== '/'
-        ? `${process.env.NEXT_PUBLIC_FRONTEND_URL || ''}${redirectPath}`
-        : `${process.env.NEXT_PUBLIC_FRONTEND_URL || ''}/dashboard`;
-    window.location.href = `${baseUrl}/sign-in/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
+    const apiBaseUrl = (
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      'https://skill-bridge-backend-nine.vercel.app/api/v1'
+    ).replace(/\/$/, '');
+
+    const frontendBaseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL?.trim() || window.location.origin;
+
+    const redirectTo =
+      redirectPath && redirectPath.startsWith('/') && redirectPath !== '/'
+        ? redirectPath
+        : '/dashboard';
+
+    const callbackURL = new URL(redirectTo, frontendBaseUrl).toString();
+
+    window.location.href = `${apiBaseUrl}/auth/login/google?callbackURL=${encodeURIComponent(callbackURL)}`;
   };
 
   const handleDemoFill = (email: string) => {

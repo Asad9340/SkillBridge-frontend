@@ -4,11 +4,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { userService } from '@/services/user.service';
 import { DashboardSidebar } from '@/components/layout/Sidebar';
-import { cookies } from 'next/headers';
-import { jwtUtils } from '@/lib/jwtUtils';
 import { redirect } from 'next/navigation';
+import { getSessionUser } from '@/lib/getSessionUser';
+
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardLayout({
   admin,
@@ -25,51 +25,7 @@ export default async function DashboardLayout({
   tutor: React.ReactNode;
   organizer: React.ReactNode;
 }) {
-  // Fast path: decode JWT from accessToken cookie (no network call needed)
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
-
-  let userInfo = null;
-
-  if (accessToken) {
-    const decoded = jwtUtils.decodedToken(accessToken);
-    if (decoded?.userId) {
-      userInfo = {
-        id: decoded.userId as string,
-        name: (decoded.name as string) ?? '',
-        email: (decoded.email as string) ?? '',
-        role: (decoded.role as string) ?? 'STUDENT',
-        emailVerified: (decoded.emailVerified as boolean) ?? false,
-        image: null,
-        createdAt: '',
-        updatedAt: '',
-        phone: '',
-        status: 'ACTIVE',
-        bio: '',
-      };
-    }
-  }
-
-  // Fallback: call getSession if JWT decode failed (e.g., Google OAuth users without accessToken)
-  if (!userInfo) {
-    const { data } = await userService.getSession();
-    if (data?.user) {
-      const u = data.user;
-      userInfo = {
-        id: u.id,
-        name: u.name ?? '',
-        email: u.email ?? '',
-        role: u.role ?? 'STUDENT',
-        emailVerified: u.emailVerified ?? false,
-        image: u.image ?? null,
-        createdAt: '',
-        updatedAt: '',
-        phone: '',
-        status: u.status ?? 'ACTIVE',
-        bio: '',
-      };
-    }
-  }
+  const userInfo = await getSessionUser();
 
   if (!userInfo) {
     redirect('/login');
